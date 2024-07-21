@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <title>ToDo de Javo</title>
+
+    <script type="module">  
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';  
+        import "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore-compat.js"; 
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js';  
+
+        // Configuración de Firebase  
+        const firebaseConfig = {  
+            apiKey: "AIzaSyDLIT7XuMeWEVWin80mH93ai16cntKpUZk",
+  authDomain: "database-cgc.firebaseapp.com",
+  projectId: "database-cgc",
+  storageBucket: "database-cgc.appspot.com",
+  messagingSenderId: "420376008648",
+  appId: "1:420376008648:web:89e37136e3e466201192fd",
+  measurementId: "G-77JJWJPCLM" // Esto es necesario para Analytics  
+        };  
+
+        // Inicializa la aplicación de Firebase  
+        const app = initializeApp(firebaseConfig);  
+        console.log('Firebase app initialized');  
+        // Inicializa Analytics  
+        const analytics = getAnalytics(app);  
+        console.log('Analytics initialized successfully');  
+    </script> 
+</head>
+
+<body class="container">
+    <main class="row justify-content-start">
+        <div class="container m-1 col-4 p-4 border border-danger rounded">
+            <form id="todo_form">
+                <label for="todo_name" class="form-label">Nombre de tarea</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">🏷</span>
+                    <input type="text" id="todo_name" placeholder="Nombre de tarea" class="form-control" required>
+                </div>
+
+                <label for="todo_url" class="form-label">URL (opcional)</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">🔗</span>
+                    <input type="url" id="todo_url" placeholder="URL (opcional)" class="form-control">
+                </div>
+
+                <label for="todo_description" class="form-label">Descripción de tarea</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">📝</span>
+                    <textarea rows="1" id="todo_description" placeholder="Descripción" class="form-control"
+                        required></textarea>
+                </div>
+                <div class="">
+                    <button type="submit" id='btn_todo_form' class="btn btn-danger col-12">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore-compat.js"></script>
+   
+
+    <script type="module" src="/getDataForm.js"></script>
+</body>
+
+</html>
