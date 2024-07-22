@@ -25,3 +25,10 @@ tr:nth-child(even) {
         padding: 6px;
     }
 }
+
+/* Agrega esto en tu archivo CSS o en una etiqueta <style> */
+.fecha-cell div {
+    font-size: 0.9em;
+    color: #555;
+    margin-top: 5px;
+}

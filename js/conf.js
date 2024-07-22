@@ -44,11 +44,17 @@ async function AddData() {
       });
       alert("Datos agregados correctamente");
       await updateTable();
+      // Limpiar los campos después de agregar
+      nombre.value = "";
+      apellido.value = "";
+      dpto.value = "";
+      cnciInp.value = "";
     } catch (error) {
       alert("Error al agregar datos");
       console.log(error);
     }
   }
+  
 
 async function RetData() {
     const dbRef = ref(db);
@@ -74,71 +80,68 @@ async function RetData() {
         departamento: dpto.value
       });
       alert("Datos actualizados correctamente");
-      updateTable();
+      await updateTable();
+      // Limpiar los campos después de actualizar
+      nombre.value = "";
+      apellido.value = "";
+      dpto.value = "";
+      cnciInp.value = "";
     } catch (error) {
       alert("Error al actualizar datos");
       console.log(error);
     }
   }
-
-  async function DeleteData() {
-    try {
-      await remove(ref(db, 'EmployeeSet/' + cnciInp.value));
-      alert("Datos borrados correctamente");
-      updateTable();
-    } catch (error) {
-      alert("Error al borrar datos");
-      console.log(error);
-    }
-  }
+  
 
   async function updateTable() {
     employeeTable.innerHTML = "";
     const dbRef = ref(db);
-  
+
     try {
-      const snapshot = await get(child(dbRef, 'EmployeeSet'));
-      if (snapshot.exists()) {
-        // Convierte los datos en un array y ordénalos por timestamp
-        const employees = [];
-        snapshot.forEach(childSnapshot => {
-          employees.push({
-            key: childSnapshot.key,
-            ...childSnapshot.val()
-          });
-        });
-  
-        // Ordenar el array por timestamp en orden ascendente
-        employees.sort((a, b) => a.timestamp - b.timestamp);
-  
-        // Insertar las filas en la tabla
-        employees.forEach(employee => {
-          let row = employeeTable.insertRow();
-          let cnicCell = row.insertCell(0);
-          let nombreCell = row.insertCell(1);
-          let apellidoCell = row.insertCell(2);
-          let dptoCell = row.insertCell(3);
-          let fechaCell = row.insertCell(4);
-  
-          // Convierte el timestamp en una fecha legible
-          let date = new Date(employee.timestamp);
-          let formattedDate = date.toLocaleDateString(); // Puedes ajustar el formato según tus necesidades
-          let formattedTime = date.toLocaleTimeString(); // Puedes ajustar el formato según tus necesidades
-  
-          cnicCell.textContent = employee.key;
-          nombreCell.textContent = employee.nombreEmpleado.Nombre;
-          apellidoCell.textContent = employee.nombreEmpleado.Apellido;
-          dptoCell.textContent = employee.departamento;
-          fechaCell.textContent = `${formattedDate} ${formattedTime}`; // Muestra la fecha y la hora
-        });
-      } else {
-        console.log("No hay datos disponibles");
-      }
+        const snapshot = await get(child(dbRef, 'EmployeeSet'));
+        if (snapshot.exists()) {
+            // Convierte los datos en un array y ordénalos por timestamp
+            const employees = [];
+            snapshot.forEach(childSnapshot => {
+                employees.push({
+                    key: childSnapshot.key,
+                    ...childSnapshot.val()
+                });
+            });
+
+            // Ordenar el array por timestamp en orden ascendente
+            employees.sort((a, b) => a.timestamp - b.timestamp);
+
+            // Insertar las filas en la tabla
+            employees.forEach(employee => {
+                let row = employeeTable.insertRow();
+                let cnicCell = row.insertCell(0);
+                let nombreCell = row.insertCell(1);
+                let apellidoCell = row.insertCell(2);
+                let dptoCell = row.insertCell(3);
+                let fechaCell = row.insertCell(4);
+
+                // Convierte el timestamp en una fecha legible
+                let date = new Date(employee.timestamp);
+                let formattedDate = date.toLocaleDateString(); // Puedes ajustar el formato según tus necesidades
+                let formattedTime = date.toLocaleTimeString(); // Puedes ajustar el formato según tus necesidades
+
+                // Inserta la información en las celdas
+                cnicCell.textContent = employee.key;
+                nombreCell.textContent = employee.nombreEmpleado.Nombre;
+                apellidoCell.textContent = employee.nombreEmpleado.Apellido;
+                dptoCell.textContent = employee.departamento;
+                
+                // Añadir un contenedor para la fecha
+                fechaCell.innerHTML = `<div>${formattedDate} ${formattedTime}</div>`;
+            });
+        } else {
+            console.log("No hay datos disponibles");
+        }
     } catch (error) {
-      console.log("Error al recuperar los datos", error);
+        console.log("Error al recuperar los datos", error);
     }
-  }
-  
+}
 
 addBtn.addEventListener('click', AddData);
 retBtn.addEventListener('click', RetData);
