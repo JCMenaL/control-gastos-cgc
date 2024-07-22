@@ -92,6 +92,7 @@ async function RetData() {
     }
   }
   
+  
 
   async function updateTable() {
     employeeTable.innerHTML = "";
