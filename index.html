@@ -19,23 +19,24 @@
 
 <body>
     <div class="container">
-        <div class="row">
-            <label for="nombre">Nombre:</label>
+        <div class="row">          <div class="input-field col s12">
+          <select id="dpto">
+              <option value="" disabled selected>Selecciona una opción</option>
+                              <option value="Combustible">01-Combustible</option>
+                              <option value="Alimentacion">02-Alimentación</option>
+                              <option value="Hospedaje">03-Hospedaje</option>
+                              <option value="Reparacion">04-Reparación de Vehículo</option>
+                              <option value="OtrosGastos">05-Otros Gastos</option>
+          </select>
+          <label>Selecciona tipo de gasto</label>
+      </div>
+            <label for="nombre"># de factura:</label>
             <input type="text" id="nombre">
-            <label for="apellido">Apellido:</label>
+            <label for="cnciInp">Monto: ₡</label>
+            <input type="number" id="cnciInp" step="0.01">
+            <label for="apellido">Agrega una foto:</label>
             <input type="text" id="apellido">
 
-            <div class="input-field col s12">
-                <select id="dpto">
-                    <option value="" disabled selected>Selecciona una opción</option>
-                    <option value="ventas">Ventas</option>
-                    <option value="compras">Compras</option>
-                    <option value="gerencia">Gerencia</option>
-                </select>
-                <label>Selecciona tu departamento</label>
-            </div>
-            <br><br> <label for="cnciInp">CNIC:</label>
-            <input type="text" id="cnciInp">
             <button id="addBtn" class="btn waves-effect waves-light">Agregar</button>
             <button id="retBtn" class="btn waves-effect waves-light">Recuperar</button>
             <button id="upBtn" class="btn waves-effect waves-light">Actualizar</button>
@@ -44,8 +45,11 @@
         </div>
     </div>
 
-    <h5>Lista de Empleados</h5>
+    <div type="number" id="cnicTotal">Total facturas ingresadas ₡:</div>
+
+    <h5>Facturas ingresadas</h5>
     <table id="employeeTable" border="1">
+
         <thead>
           <tr>
             <th>CNIC</th>

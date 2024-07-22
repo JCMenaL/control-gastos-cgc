@@ -92,7 +92,18 @@ async function RetData() {
     }
   }
   
-  
+  // Función para sumar los valores de CNIC
+function sumCnic() {
+  let totalCnic = 0;
+  const rows = employeeTable.rows;
+
+  for (let i = 0; i < rows.length; i++) {
+      const cnicValue = rows[i].cells[0].textContent;
+      totalCnic += Number(cnicValue);
+  }
+
+  document.getElementById('cnicTotal').textContent = `Total CNIC': ${totalCnic}`;
+}
 
   async function updateTable() {
     employeeTable.innerHTML = "";
@@ -103,15 +114,22 @@ async function RetData() {
         if (snapshot.exists()) {
             // Convierte los datos en un array y ordénalos por timestamp
             const employees = [];
+            let cnicSum = 0; // Inicializa la suma de CNIC
+            
             snapshot.forEach(childSnapshot => {
-                employees.push({
+                const employee = {
                     key: childSnapshot.key,
                     ...childSnapshot.val()
-                });
+                };
+                employees.push(employee);
+                cnicSum += employee.cnic; // Suma el valor de CNIC
             });
 
             // Ordenar el array por timestamp en orden ascendente
             employees.sort((a, b) => a.timestamp - b.timestamp);
+
+            // Mostrar la suma total de CNIC
+            document.getElementById('cnicTotal').textContent = `Total facturas ingresadas ₡ ${cnicSum}`;
 
             // Insertar las filas en la tabla
             employees.forEach(employee => {
@@ -150,4 +168,13 @@ upBtn.addEventListener('click', UpdateData);
 //delBtn.addEventListener('click', DeleteData);
 
 // Inicializar la tabla al cargar la página
-updateTable();                                             
+updateTable();     
+
+//resetear el select 
+function resetSelect() {
+  const dptoSelect = document.getElementById('dpto');
+  dptoSelect.selectedIndex = 0; // Restablece al primer elemento (la opción con value="")
+}
+
+
+
