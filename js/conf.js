@@ -23,9 +23,9 @@ const app = initializeApp(firebaseConfig);
 
 const db = getDatabase();
 
-let factura = document.getElementById("factura");
-let monto = document.getElementById("monto");
-let gasto = document.getElementById("gasto");
+let nombre = document.getElementById("nombre");
+let apellido = document.getElementById("apellido");
+let dpto = document.getElementById("dpto");
 let cnciInp = document.getElementById("cnciInp");
 
 let addBtn = document.getElementById("addBtn");
@@ -35,8 +35,8 @@ let delBtn = document.getElementById("delBtn");
 
 function AddData() {
     set(ref(db, 'EmployeeSet/' + cnciInp.value), {
-        facturaEmpleado: { factura: factura.value, monto: monto.value },
-        departamento: gasto.value,
+        nombreEmpleado: { Nombre: nombre.value, Apellido: apellido.value },
+        departamento: dpto.value,
         cnic: Number(cnciInp.value)
     }).then(() => {
         alert("Datos agregados correctamente");
@@ -51,9 +51,9 @@ function RetData() {
 
     get(child(dbRef, 'EmployeeSet/' + cnciInp.value)).then((snapshot) => {
         if (snapshot.exists()) {
-            factura.value = snapshot.val().facturaEmpleado.factura;
-            monto.value = snapshot.val().facturaEmpleado.monto;
-            gasto.value = snapshot.val().departamento;
+            nombre.value = snapshot.val().nombreEmpleado.Nombre;
+            apellido.value = snapshot.val().nombreEmpleado.Apellido;
+            dpto.value = snapshot.val().departamento;
         } else {
             alert("Empleado no existe");
         }
@@ -65,8 +65,8 @@ function RetData() {
 
 function UpdateData() {
     update(ref(db, 'EmployeeSet/' + cnciInp.value), {
-        facturaEmpleado: { factura: factura.value, monto: monto.value },
-        departamento: gasto.value
+        nombreEmpleado: { Nombre: nombre.value, Apellido: apellido.value },
+        departamento: dpto.value
     }).then(() => {
         alert("Datos actualizados correctamente");
     }).catch((error) => {
@@ -74,6 +74,7 @@ function UpdateData() {
         console.log(error);
     });
 }
+
 
 function DeleteData() {
     remove(ref(db, 'EmployeeSet/' + cnciInp.value)).then(() => {
