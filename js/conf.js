@@ -33,90 +33,112 @@ let delBtn = document.getElementById("delBtn");
 
 let employeeTable = document.getElementById("employeeTable").getElementsByTagName('tbody')[0];
 
-function AddData() {
-    set(ref(db, 'EmployeeSet/' + cnciInp.value), {
+async function AddData() {
+    try {
+      const timestamp = Date.now(); // Obtiene el tiempo actual en milisegundos
+      await set(ref(db, 'EmployeeSet/' + cnciInp.value), {
         nombreEmpleado: { Nombre: nombre.value, Apellido: apellido.value },
         departamento: dpto.value,
-        cnic: Number(cnciInp.value)
-    }).then(() => {
-        alert("Datos agregados correctamente");
-    }).catch((error) => {
-        alert("Error al agregar datos");
-        console.log(error);
-    });
-    updateTable();
+        cnic: Number(cnciInp.value),
+        timestamp: timestamp // Agrega la marca de tiempo
+      });
+      alert("Datos agregados correctamente");
+      await updateTable();
+    } catch (error) {
+      alert("Error al agregar datos");
+      console.log(error);
+    }
+  }
 
-}
-
-function RetData() {
+async function RetData() {
     const dbRef = ref(db);
+    try {
+      const snapshot = await get(child(dbRef, 'EmployeeSet/' + cnciInp.value));
+      if (snapshot.exists()) {
+        nombre.value = snapshot.val().nombreEmpleado.Nombre;
+        apellido.value = snapshot.val().nombreEmpleado.Apellido;
+        dpto.value = snapshot.val().departamento;
+      } else {
+        alert("Empleado no existe");
+      }
+    } catch (error) {
+      alert("Error al recuperar los datos");
+      console.log(error);
+    }
+  }
 
-    get(child(dbRef, 'EmployeeSet/' + cnciInp.value)).then((snapshot) => {
-        if (snapshot.exists()) {
-            nombre.value = snapshot.val().nombreEmpleado.Nombre;
-            apellido.value = snapshot.val().nombreEmpleado.Apellido;
-            dpto.value = snapshot.val().departamento;
-        } else {
-            alert("Empleado no existe");
-        }
-    }).catch((error) => {
-        alert("Error al recuperar los datos");
-        console.log(error);
-    });
-    updateTable();
-
-}
-
-function UpdateData() {
-    update(ref(db, 'EmployeeSet/' + cnciInp.value), {
+  async function UpdateData() {
+    try {
+      await update(ref(db, 'EmployeeSet/' + cnciInp.value), {
         nombreEmpleado: { Nombre: nombre.value, Apellido: apellido.value },
         departamento: dpto.value
-    }).then(() => {
-        alert("Datos actualizados correctamente");
-    }).catch((error) => {
-        alert("Error al actualizar datos");
-        console.log(error);
-    });
-    updateTable();
+      });
+      alert("Datos actualizados correctamente");
+      updateTable();
+    } catch (error) {
+      alert("Error al actualizar datos");
+      console.log(error);
+    }
+  }
 
-}
+  async function DeleteData() {
+    try {
+      await remove(ref(db, 'EmployeeSet/' + cnciInp.value));
+      alert("Datos borrados correctamente");
+      updateTable();
+    } catch (error) {
+      alert("Error al borrar datos");
+      console.log(error);
+    }
+  }
 
-function DeleteData() {
-    remove(ref(db, 'EmployeeSet/' + cnciInp.value)).then(() => {
-        alert("Datos borrados correctamente");
-    }).catch((error) => {
-        alert("Error al borrar datos");
-        console.log(error);
-    });
-    updateTable();
-
-}
-
-function updateTable() {
+  async function updateTable() {
     employeeTable.innerHTML = "";
     const dbRef = ref(db);
-
-    get(child(dbRef, 'EmployeeSet')).then((snapshot) => {
-        if (snapshot.exists()) {
-            snapshot.forEach(childSnapshot => {
-                let row = employeeTable.insertRow();
-                let cnicCell = row.insertCell(0);
-                let nombreCell = row.insertCell(1);
-                let apellidoCell = row.insertCell(2);
-                let dptoCell = row.insertCell(3);
-
-                cnicCell.textContent = childSnapshot.key;
-                nombreCell.textContent = childSnapshot.val().nombreEmpleado.Nombre;
-                apellidoCell.textContent = childSnapshot.val().nombreEmpleado.Apellido;
-                dptoCell.textContent = childSnapshot.val().departamento;
-            });
-        } else {
-            console.log("No hay datos disponibles");
-        }
-    }).catch((error) => {
-        console.log("Error al recuperar los datos", error);
-    });
-}
+  
+    try {
+      const snapshot = await get(child(dbRef, 'EmployeeSet'));
+      if (snapshot.exists()) {
+        // Convierte los datos en un array y ordénalos por timestamp
+        const employees = [];
+        snapshot.forEach(childSnapshot => {
+          employees.push({
+            key: childSnapshot.key,
+            ...childSnapshot.val()
+          });
+        });
+  
+        // Ordenar el array por timestamp en orden ascendente
+        employees.sort((a, b) => a.timestamp - b.timestamp);
+  
+        // Insertar las filas en la tabla
+        employees.forEach(employee => {
+          let row = employeeTable.insertRow();
+          let cnicCell = row.insertCell(0);
+          let nombreCell = row.insertCell(1);
+          let apellidoCell = row.insertCell(2);
+          let dptoCell = row.insertCell(3);
+          let fechaCell = row.insertCell(4);
+  
+          // Convierte el timestamp en una fecha legible
+          let date = new Date(employee.timestamp);
+          let formattedDate = date.toLocaleDateString(); // Puedes ajustar el formato según tus necesidades
+          let formattedTime = date.toLocaleTimeString(); // Puedes ajustar el formato según tus necesidades
+  
+          cnicCell.textContent = employee.key;
+          nombreCell.textContent = employee.nombreEmpleado.Nombre;
+          apellidoCell.textContent = employee.nombreEmpleado.Apellido;
+          dptoCell.textContent = employee.departamento;
+          fechaCell.textContent = `${formattedDate} ${formattedTime}`; // Muestra la fecha y la hora
+        });
+      } else {
+        console.log("No hay datos disponibles");
+      }
+    } catch (error) {
+      console.log("Error al recuperar los datos", error);
+    }
+  }
+  
 
 addBtn.addEventListener('click', AddData);
 retBtn.addEventListener('click', RetData);
