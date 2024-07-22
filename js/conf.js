@@ -40,11 +40,12 @@ function AddData() {
         cnic: Number(cnciInp.value)
     }).then(() => {
         alert("Datos agregados correctamente");
-        updateTable();
     }).catch((error) => {
         alert("Error al agregar datos");
         console.log(error);
     });
+    updateTable();
+
 }
 
 function RetData() {
@@ -55,7 +56,6 @@ function RetData() {
             nombre.value = snapshot.val().nombreEmpleado.Nombre;
             apellido.value = snapshot.val().nombreEmpleado.Apellido;
             dpto.value = snapshot.val().departamento;
-            updateTable();
         } else {
             alert("Empleado no existe");
         }
@@ -63,6 +63,8 @@ function RetData() {
         alert("Error al recuperar los datos");
         console.log(error);
     });
+    updateTable();
+
 }
 
 function UpdateData() {
@@ -71,21 +73,23 @@ function UpdateData() {
         departamento: dpto.value
     }).then(() => {
         alert("Datos actualizados correctamente");
-        updateTable();
     }).catch((error) => {
         alert("Error al actualizar datos");
         console.log(error);
     });
+    updateTable();
+
 }
 
 function DeleteData() {
     remove(ref(db, 'EmployeeSet/' + cnciInp.value)).then(() => {
         alert("Datos borrados correctamente");
-        updateTable();
     }).catch((error) => {
         alert("Error al borrar datos");
         console.log(error);
     });
+    updateTable();
+
 }
 
 function updateTable() {
@@ -117,7 +121,7 @@ function updateTable() {
 addBtn.addEventListener('click', AddData);
 retBtn.addEventListener('click', RetData);
 upBtn.addEventListener('click', UpdateData);
-delBtn.addEventListener('click', DeleteData);
+//delBtn.addEventListener('click', DeleteData);
 
 // Inicializar la tabla al cargar la página
-updateTable();
+updateTable();                                             

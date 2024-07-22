@@ -20,28 +20,28 @@
 <body>
     <div class="container">
         <div class="row">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre">
-        <label for="apellido">Apellido:</label>
-        <input type="text" id="apellido">
-        
-        <div class="input-field col s12">
-            <select id="dpto">
-                <option value="" disabled selected>Selecciona una opción</option>
-                <option value="ventas">Ventas</option>
-                <option value="compras">Compras</option>
-                <option value="gerencia">Gerencia</option>
-            </select>
-            <label>Selecciona tu departamento</label>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre">
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido">
+
+            <div class="input-field col s12">
+                <select id="dpto">
+                    <option value="" disabled selected>Selecciona una opción</option>
+                    <option value="ventas">Ventas</option>
+                    <option value="compras">Compras</option>
+                    <option value="gerencia">Gerencia</option>
+                </select>
+                <label>Selecciona tu departamento</label>
+            </div>
+            <br><br> <label for="cnciInp">CNIC:</label>
+            <input type="text" id="cnciInp">
+            <button id="addBtn" class="btn waves-effect waves-light">Agregar</button>
+            <button id="retBtn" class="btn waves-effect waves-light">Recuperar</button>
+            <button id="upBtn" class="btn waves-effect waves-light">Actualizar</button>
+           <!-- <button id="delBtn" class="btn waves-effect waves-light">Borrar</button>-->
         </div>
-        <br><br>        <label for="cnciInp">CNIC:</label>
-        <input type="text" id="cnciInp">
-        <button id="addBtn">Agregar</button>
-        <button id="retBtn">Recuperar</button>
-        <button id="upBtn">Actualizar</button>
-        <button id="delBtn">Borrar</button>
     </div>
-</div>
 
     <h5>Lista de Empleados</h5>
     <table id="employeeTable" border="1">
