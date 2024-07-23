@@ -4,69 +4,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>control gastos</title>
+    <title>Control de Gastos</title>
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-    <!-- Compiled and minified JavaScript -->
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--carpeta de decoracion css-->
-    <!--<link rel="stylesheet" type="text/css" href="css/estilo.css">-->
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">          <div class="input-field col s12">
-          <select id="dpto">
-              <option value="" disabled selected>Selecciona una opción</option>
-                              <option value="Combustible">01-Combustible</option>
-                              <option value="Alimentacion">02-Alimentación</option>
-                              <option value="Hospedaje">03-Hospedaje</option>
-                              <option value="Reparacion">04-Reparación de Vehículo</option>
-                              <option value="OtrosGastos">05-Otros Gastos</option>
-          </select>
-          <label>Selecciona tipo de gasto</label>
-      </div>
-            <label for="nombre"># de factura:</label>
-            <input type="text" id="nombre">
-            <label for="cnciInp">Monto: ₡</label>
-            <input type="number" id="cnciInp" step="0.01">
-            <label for="apellido">Agrega una foto:</label>
-            <input type="text" id="apellido">
+    <!-- Encabezado -->
+    <nav>
+        <div class="nav-wrapper teal">
+            <a href="#" class="brand-logo center"><h5>Control de Gastos</h5></a>
+        </div>
+    </nav>
 
-            <button id="addBtn" class="btn waves-effect waves-light">Agregar</button>
-            <button id="retBtn" class="btn waves-effect waves-light">Recuperar</button>
-            <button id="upBtn" class="btn waves-effect waves-light">Actualizar</button>
-           <!-- <button id="delBtn" class="btn waves-effect waves-light">Borrar</button>-->
-            
+    <div class="container">
+        <div class="section">
+            <div class="row">
+                <div class="input-field col s12 m6">
+                    <select id="dpto">
+                        <option value="" disabled selected>Selecciona una opción</option>
+                        <option value="Combustible">01-Combustible</option>
+                        <option value="Alimentacion">02-Alimentación</option>
+                        <option value="Hospedaje">03-Hospedaje</option>
+                        <option value="Reparacion">04-Reparación de Vehículo</option>
+                        <option value="OtrosGastos">05-Otros Gastos</option>
+                    </select>
+                    <label>Selecciona tipo de gasto</label>
+                </div>
+                <div class="input-field col s12 m6">
+                    <label for="nombre"># de factura:</label>
+                    <input type="text" id="nombre">
+                </div>
+                <div class="input-field col s12 m6">
+                    <label for="cnciInp">Monto: ₡</label>
+                    <input type="number" id="cnciInp" step="0.01">
+                </div>
+                <div class="input-field col s12 m6">
+                    <label for="apellido">Agrega una foto:</label>
+                    <input type="text" id="apellido">
+                </div>
+                <div class="col s12">
+                    <button id="addBtn" class="btn waves-effect waves-light teal">Agregar</button>
+                    <button id="retBtn" class="btn waves-effect waves-light teal">Recuperar</button>
+                    <button id="upBtn" class="btn waves-effect waves-light teal">Actualizar</button>
+                    <!-- <button id="delBtn" class="btn waves-effect waves-light teal">Borrar</button> -->
+                </div>
+            </div>
         </div>
     </div>
 
-    <div type="number" id="cnicTotal">Total facturas ingresadas ₡:</div>
+    <div class="container">
+        <div id="cnicTotal" class="card-panel teal white-text">Total facturas ingresadas ₡:</div>
 
-    <h5>Facturas ingresadas</h5>
-    <table id="employeeTable" border="1">
+        <h5 class="center-align">Facturas Ingresadas</h5>
+        <table id="employeeTable" class="striped">
+            <thead>
+                <tr>
+                    <th>Número Factura</th>
+                    <th>Monto</th>
+                    <th>Categoría</th>
+                    <th>Foto</th>
+                    <th class="fecha-cell">Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Contenido de la tabla se llenará dinámicamente -->
+            </tbody>
+        </table>
+    </div>
 
-        <thead>
-          <tr>
-            <th>CNIC</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Departamento</th>
-            <th class="fecha-cell">Fecha</th> 
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="module" src="js/conf.js"></script>
-
 </body>
 
 </html>
