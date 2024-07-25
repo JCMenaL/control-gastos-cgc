@@ -16,22 +16,31 @@
 </head>
 
 <body>
-    <container>
 
-        <div class="row">
-            <nav>
-                <div class="nav-wrapper">
-                    <a href="#" class="brand-logo">Registro gastos</a>
-                    <ul id="nav-mobile" class="right hide-on-med-and-down">
-                        <li><a class="waves-effect waves-light btn modal-trigger" href="#inicioModal">Ingresar</a></li>
-                        <li><a class="waves-effect waves-light btn modal-trigger" href="#registroModal">Registrarse</a></li>
-                        <li><a class="waves-effect waves-light btn modal-trigger" href="#salirModal">Salir</a></li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
+    <!-- Navbar -->
+  
+    <div class="container">
+      <div class="row">
+          <nav>
+              <div class="nav-wrapper">
+                  <a href="#" class="brand-logo">Registro Gastos</a>
+                  <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                  <ul id="nav-mobile" class="right hide-on-med-and-down">
+                      <li><a class="waves-effect waves-light btn modal-trigger" href="#inicioModal">Ingresar</a></li>
+                      <li><a class="waves-effect waves-light btn modal-trigger" href="#registroModal">Registrarse</a></li>
+                      <li><a class="waves-effect waves-light btn modal-trigger" href="#salirModal">Salir</a></li>
+                  </ul>
+              </div>
+          </nav>
+      </div>
 
-    </container>
+      <!-- Menú lateral para dispositivos móviles -->
+      <ul class="sidenav" id="mobile-demo">
+          <li><a class="waves-effect waves-light btn modal-trigger" href="#inicioModal">Ingresar</a></li>
+          <li><a class="waves-effect waves-light btn modal-trigger" href="#registroModal">Registrarse</a></li>
+          <li><a class="waves-effect waves-light btn modal-trigger" href="#salirModal">Salir</a></li>
+      </ul>
+  </div>
 
     <!-- Modal-->
 

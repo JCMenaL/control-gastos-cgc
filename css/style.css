@@ -32,3 +32,9 @@ tr:nth-child(even) {
     color: #555;
     margin-top: 5px;
 }
+
+/* Estilo personalizado para el nav */
+nav {
+    border-radius: 6px; 
+    overflow: hidden; 
+}
