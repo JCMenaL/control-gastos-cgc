@@ -55,6 +55,34 @@ loginForm.addEventListener('submit', async (e) => {
     }
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Referencia a los elementos de la interfaz
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+
+    if (emailInput && passwordInput && loginBtn) {
+        // Función para manejar el inicio de sesión
+        loginBtn.addEventListener('click', () => {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    // Usuario autenticado correctamente
+                    window.location.href = 'registro.html'; // Redirigir a otra página
+                })
+                .catch((error) => {
+                    // Manejar errores
+                    console.error('Error al iniciar sesión:', error.message);
+                    alert('Error al iniciar sesión: ' + error.message);
+                });
+        });
+    } else {
+        console.error('No se pudieron encontrar uno o más elementos del DOM');
+    }
+});
+
 
 let nombre = document.getElementById("nombre");
 let apellido = document.getElementById("apellido");

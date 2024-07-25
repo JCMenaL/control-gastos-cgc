@@ -3,92 +3,100 @@
 
 <head>
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Control de Gastos</title>
-        <!-- Compiled and minified CSS -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-        <link rel="stylesheet" href="css/style.css">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    </head>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Gastos</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
 </head>
 
 <body>
 
-    <!-- Navbar -->
-  
-    
-      <div class="row">
-          <nav>
-              <div class="nav-wrapper">
-                  <a href="#" class="brand-logo"><h5>Registro Gastos</h4></a>
-                  <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-                  <ul id="nav-mobile" class="right hide-on-med-and-down">
-                      <li><a class="waves-effect waves-light btn modal-trigger" href="#inicioModal">Ingresar</a></li>
-                      <li><a class="waves-effect waves-light btn modal-trigger" href="#registroModal">Registrarse</a></li>
-                      <li><a class="waves-effect waves-light btn modal-trigger" href="#salirModal">Salir</a></li>
-                  </ul>
-              </div>
-          </nav>
-      </div>
+  <!-- Navbar -->
 
-      <!-- Menú lateral para dispositivos móviles -->
-      <ul class="sidenav" id="mobile-demo">
+
+  <div class="row">
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo">
+          <h5>Registro Gastos</h4>
+        </a>
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li><a class="waves-effect waves-light btn modal-trigger" href="#inicioModal">Ingresar</a></li>
           <li><a class="waves-effect waves-light btn modal-trigger" href="#registroModal">Registrarse</a></li>
           <li><a class="waves-effect waves-light btn modal-trigger" href="#salirModal">Salir</a></li>
-      </ul>
- 
+        </ul>
+      </div>
+    </nav>
+  </div>
 
-    <!-- Modal-->
+  <!-- Menú lateral para dispositivos móviles -->
+  <ul class="sidenav" id="mobile-demo">
+    <li><a class="waves-effect waves-light btn modal-trigger" href="#inicioModal">Ingresar</a></li>
+    <li><a class="waves-effect waves-light btn modal-trigger" href="#registroModal">Registrarse</a></li>
+    <li><a class="waves-effect waves-light btn modal-trigger" href="#salirModal">Salir</a></li>
+  </ul>
 
-       
 
-    <div id="registroModal" class="modal">
-        <div class="modal-content">
-          <h4>Registrate!!</h4>
-          <div class="row">
-            <form id="registerForm">
-              <div class="input-field">
-              <input type="email" id="registerEmail" required>
-              <label for="registerEmail">Correo Electrónico</label>
-              </div>
-              <div class="input-field">
-              <input type="password" id="registerPassword" required>
-              <label for="registerPassword">Contraseña</label>
-              </div>
-              <button class="btn waves-effect waves-light" type="submit">Registrarse</button>
-              </form>
+  <!-- Modal-->
+
+
+
+  <div id="registroModal" class="modal">
+    <div class="modal-content">
+      <h4>Registrate!!</h4>
+      <div class="row">
+        <form id="registerForm">
+          <div class="input-field">
+            <input type="email" id="registerEmail" required>
+            <label for="registerEmail">Correo Electrónico</label>
           </div>
-        </div>
+          <div class="input-field">
+            <input type="password" id="registerPassword" required>
+            <label for="registerPassword">Contraseña</label>
+          </div>
+          <button class="btn waves-effect waves-light" type="submit">Registrarse</button>
+        </form>
       </div>
-      
-      <div id="inicioModal" class="modal">
-        <div class="modal-content">
-          <h3>Inicia sesion</h3>
-<form id="loginForm">
-<div class="input-field">
-<input type="email" id="loginEmail" required>
-<label for="loginEmail">Correo Electrónico</label>
-</div>
-<div class="input-field">
-<input type="password" id="loginPassword" required>
-<label for="loginPassword">Contraseña</label>
-</div>
-<button class="btn waves-effect waves-light" type="submit">Login</button>
-</form>
-</div>
-        </div>
-      </div>
-
     </div>
-    <!--Scripts-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
-    <script type="text/javascript" src="js/inicio.js"></script>
-    <script type="module" src="js/conf.js"></script>
+  </div>
+
+  <div id="inicioModal" class="modal">
+    <div class="modal-content">
+      <h4>Iniciar Sesión</h4>
+        <div class="row">
+            <form class="col s12" id="loginForm">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="email" type="email" class="validate" required>
+                        <label for="email">Correo Electrónico</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="password" type="password" class="validate" required>
+                        <label for="password">Contraseña</label>
+                    </div>
+                </div>
+                <button type="button" id="loginBtn" class="waves-effect waves-light btn">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+  </div>
+  </div>
+
+  </div>
+  <!--Scripts-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/inicio.js"></script>
+  <script type="module" src="js/conf.js"></script>
 
 </body>
 
