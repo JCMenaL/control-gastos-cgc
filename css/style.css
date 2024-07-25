@@ -35,6 +35,6 @@ tr:nth-child(even) {
 
 /* Estilo personalizado para el nav */
 nav {
-    border-radius: 6px; 
+    border-radius: 10px; 
     overflow: hidden; 
 }
