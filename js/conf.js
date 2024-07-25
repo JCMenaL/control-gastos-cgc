@@ -2,6 +2,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getDatabase, ref, child, get, set, update, remove } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,6 +17,44 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const auth = getAuth(app);
+
+// Registro de usuario
+const registerForm = document.getElementById('registerForm');
+registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        console.log('Usuario registrado:', userCredential.user);
+        M.toast({html: 'Registro exitoso'});
+        registerForm.reset();
+    } catch (error) {
+        console.error('Error en el registro:', error);
+        M.toast({html: `Error: ${error.message}`});
+    }
+});
+
+// Login de usuario
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log('Usuario logueado:', userCredential.user);
+        M.toast({html: 'Login exitoso'});
+        loginForm.reset();
+    } catch (error) {
+        console.error('Error en el login:', error);
+        M.toast({html: `Error: ${error.message}`});
+    }
+});
+
 
 let nombre = document.getElementById("nombre");
 let apellido = document.getElementById("apellido");
@@ -188,3 +227,8 @@ function resetSelect() {
     const dptoSelect = document.getElementById('dpto');
     dptoSelect.selectedIndex = 0; // Restablece al primer elemento (la opción con value="")
 }
+
+
+//registro usuario
+
+
