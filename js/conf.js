@@ -43,10 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
   } 
 });
 
-// Login de usuario
 document.addEventListener('DOMContentLoaded', () => {
-    // Login de usuario
     const loginForm = document.getElementById('loginForm');
+    
     if (loginForm) {
       loginForm.addEventListener('submit', async (e) => {
         e.preventDefault(); // Previene el envío del formulario por defecto
@@ -55,55 +54,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = document.getElementById('loginPassword').value;
   
         try {
-          // Intentar iniciar sesión con el email y la contraseña proporcionados
           const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+  
+          // Almacenar el correo en el almacenamiento local
+          localStorage.setItem('userEmail', user.email);
+  
+          console.log('Usuario logueado:', user);
+          M.toast({ html: 'Login correcto' }); // Toast con mensaje de éxito
           
-          // Mostrar mensaje en la consola y el toast en caso de éxito
-          console.log('Usuario logueado:', userCredential.user);
-          M.toast({html: 'Login correcto'}); // Toast con mensaje de éxito
-          loginForm.reset(); // Limpiar el formulario
+          // Redirigir a registro.html después del login exitoso
+          window.location.href = 'registro.html';
         } catch (error) {
-          // Mostrar mensaje de error en caso de falla
           console.error('Error en el login:', error);
-          M.toast({html: `Error: ${error.message}`});
+          M.toast({ html: `Error: ${error.message}` });
         }
       });
-    } 
+    } else {
+      console.error('Formulario de login no encontrado en el DOM.');
+    }
   });
   
-
-  document.addEventListener('DOMContentLoaded', () => {
-    // Referencia a los elementos del formulario de login
-    const emailInput = document.getElementById('loginEmail');
-    const passwordInput = document.getElementById('loginPassword');
-    const loginForm = document.getElementById('loginForm');
-
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Previene el envío del formulario por defecto
-
-            const email = emailInput.value;
-            const password = passwordInput.value;
-
-            try {
-                // Intentar iniciar sesión con el email y la contraseña proporcionados
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-                // Mostrar mensaje en la consola y el toast en caso de éxito
-                console.log('Usuario logueado:', userCredential.user);
-                M.toast({ html: 'Login correcto' }); // Toast con mensaje de éxito
-
-                // Redirigir a otra página después del login exitoso
-                window.location.href = 'registro.html'; // Redirigir a la página deseada
-            } catch (error) {
-                // Mostrar mensaje de error en caso de falla
-                console.error('Error en el login:', error);
-                M.toast({ html: `Error: ${error.message}` });
-            }
-        });
-    }
-});
-
+ 
 let nFactura = document.getElementById("nFactura");
 let foto = document.getElementById("foto");
 let tGasto = document.getElementById("tGasto");

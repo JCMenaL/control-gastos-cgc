@@ -1,8 +1,7 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('select');
-    var instances = M.FormSelect.init(elems);
+   
 
       // Inicializar el menú lateral
    var sidenavElems = document.querySelectorAll('.sidenav');
@@ -13,4 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
    
   });
 
- 
+  document.addEventListener('DOMContentLoaded', () => {
+    M.AutoInit(); // Inicializa todos los componentes de Materialize
+
+    // Inicializa el elemento select
+    const elems = document.querySelectorAll('select');
+    M.FormSelect.init(elems, {});
+  });
