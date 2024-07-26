@@ -47,32 +47,45 @@
 
 
 
+    <!-- Modal para Registro -->
     <div id="registroModal" class="modal">
       <div class="modal-content">
-        <h4>Registrate!!</h4>
+        <h4>¡Regístrate!</h4>
         <div class="row">
           <form id="registerForm">
-            <input type="email" id="registerEmail" placeholder="Email" required />
-            <input type="password" id="registerPassword" placeholder="Password" required />
-            <button type="submit">Registrar</button>
+            <div class="input-field col s12">
+              <input type="email" id="registerEmail" class="validate" required />
+              <label for="registerEmail">Email</label>
+            </div>
+            <div class="input-field col s12">
+              <input type="password" id="registerPassword" class="validate" required />
+              <label for="registerPassword">Password</label>
+            </div>
+            <button class="btn waves-effect waves-light" type="submit">Registrar</button>
           </form>
         </div>
       </div>
     </div>
 
+    <!-- Modal para Login -->
     <div id="inicioModal" class="modal">
       <div class="modal-content">
         <h4>Iniciar Sesión</h4>
         <div class="row">
           <form id="loginForm">
-            <input type="email" id="loginEmail" placeholder="Email" required />
-            <input type="password" id="loginPassword" placeholder="Password" required />
-            <button type="submit">Login</button>
+            <div class="input-field col s12">
+              <input type="email" id="loginEmail" class="validate" required />
+              <label for="loginEmail">Email</label>
+            </div>
+            <div class="input-field col s12">
+              <input type="password" id="loginPassword" class="validate" required />
+              <label for="loginPassword">Password</label>
+            </div>
+            <button class="btn waves-effect waves-light" type="submit">Login</button>
           </form>
         </div>
       </div>
     </div>
-  </div>
 
   </div>
   <!--Scripts-->
