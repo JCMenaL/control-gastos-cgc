@@ -22,7 +22,6 @@ const auth = getAuth(app);
 // Registro de usuario
 const registerForm = document.getElementById('registerForm');
 registerForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
     const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
 
@@ -40,7 +39,6 @@ registerForm.addEventListener('submit', async (e) => {
 // Login de usuario
 const loginForm = document.getElementById('loginForm');
 loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value;
 
@@ -55,6 +53,8 @@ loginForm.addEventListener('submit', async (e) => {
     }
 });
 
+
+//Cambio de pagina
 document.addEventListener('DOMContentLoaded', function() {
     // Referencia a los elementos de la interfaz
     const emailInput = document.getElementById('email');
@@ -90,11 +90,11 @@ let dpto = document.getElementById("dpto");
 let cnciInp = document.getElementById("cnciInp");
 
 let addBtn = document.getElementById("addBtn");
-let retBtn = document.getElementById("retBtn");
-let upBtn = document.getElementById("upBtn");
-let delBtn = document.getElementById("delBtn");
+//let retBtn = document.getElementById("retBtn");
+l//et upBtn = document.getElementById("upBtn");
+//let delBtn = document.getElementById("delBtn");
 
-let employeeTable = document.getElementById("employeeTable").getElementsByTagName('tbody')[0];
+const employeeTable = document.getElementById("employeeTable").getElementsByTagName('tbody')[0];
 
 // Función para validar los campos del formulario
 function validateForm() {
@@ -111,31 +111,20 @@ function validateForm() {
     return true; // Indica que la validación pasó
 }
 
-async function AddData() {
-    if (!validateForm()) return; // Verifica la validación antes de continuar
 
-    try {
-        const timestamp = Date.now(); // Obtiene el tiempo actual en milisegundos
-        await set(ref(db, 'EmployeeSet/' + cnciInp.value), {
-            nombreEmpleado: { Nombre: nombre.value, Apellido: apellido.value },
-            departamento: dpto.value,
-            cnic: Number(cnciInp.value),
-            timestamp: timestamp // Agrega la marca de tiempo
-        });
+function AddData() {
+    set(ref(db, 'EmployeeSet/' + cnciInp.value), {
+        nombreEmpleado: { Nombre: nombre.value, Apellido: apellido.value },
+        departamento: dpto.value,
+        cnic: Number(cnciInp.value)
+    }).then(() => {
         alert("Datos agregados correctamente");
-        await updateTable();
-        // Limpiar los campos después de agregar
-        nombre.value = "";
-        apellido.value = "";
-        dpto.value = "";
-        cnciInp.value = "";
-    } catch (error) {
+    }).catch((error) => {
         alert("Error al agregar datos");
         console.log(error);
-    }
+    });
 }
-
-async function RetData() {
+/*async function RetData() {
     if (!validateForm()) return; // Verifica la validación antes de continuar
 
     const dbRef = ref(db);
@@ -173,7 +162,7 @@ async function UpdateData() {
         alert("Error al actualizar datos");
         console.log(error);
     }
-}
+}*/
 
 // Función para formatear valores en colón costarricense
 function formatToColones(value) {
@@ -185,67 +174,34 @@ function formatToColones(value) {
     }).format(value);
 }
 
-async function updateTable() {
-    employeeTable.innerHTML = "";
-    const dbRef = ref(db);
+function updateTable(snapshot) {
+    employeeTable.innerHTML = ""; // Limpia la tabla
 
-    try {
-        const snapshot = await get(child(dbRef, 'EmployeeSet'));
-        if (snapshot.exists()) {
-            // Convierte los datos en un array y ordénalos por timestamp
-            const employees = [];
-            let cnicSum = 0; // Inicializa la suma de CNIC
-            
-            snapshot.forEach(childSnapshot => {
-                const employee = {
-                    key: childSnapshot.key,
-                    ...childSnapshot.val()
-                };
-                employees.push(employee);
-                cnicSum += employee.cnic; // Suma el valor de CNIC
-            });
+    if (snapshot.exists()) {
+        snapshot.forEach(childSnapshot => {
+            let row = employeeTable.insertRow();
+            let cnicCell = row.insertCell(0);
+            let nombreCell = row.insertCell(1);
+            let apellidoCell = row.insertCell(2);
+            let dptoCell = row.insertCell(3);
 
-            // Ordenar el array por timestamp en orden ascendente
-            employees.sort((a, b) => a.timestamp - b.timestamp);
-
-            // Mostrar la suma total de CNIC
-            document.getElementById('cnicTotal').textContent = `Total facturas ingresadas ${formatToColones(cnicSum)}`;
-
-            // Insertar las filas en la tabla
-            employees.forEach(employee => {
-                let row = employeeTable.insertRow();
-                let nombreCell = row.insertCell(0);
-                let cnicCell = row.insertCell(1);
-                let apellidoCell = row.insertCell(2);
-                let dptoCell = row.insertCell(3);
-                let fechaCell = row.insertCell(4);
-
-                // Convierte el timestamp en una fecha legible
-                let date = new Date(employee.timestamp);
-                let formattedDate = date.toLocaleDateString(); // Puedes ajustar el formato según tus necesidades
-                let formattedTime = date.toLocaleTimeString(); // Puedes ajustar el formato según tus necesidades
-
-                // Inserta la información en las celdas
-                cnicCell.textContent = formatToColones(employee.key);
-                nombreCell.textContent = employee.nombreEmpleado.Nombre;
-                apellidoCell.textContent = employee.nombreEmpleado.Apellido;
-                dptoCell.textContent = employee.departamento;
-                
-                // Añadir un contenedor para la fecha
-                fechaCell.innerHTML = `<div>${formattedDate} ${formattedTime}</div>`;
-            });
-        } else {
-            console.log("No hay datos disponibles");
-        }
-    } catch (error) {
-        console.log("Error al recuperar los datos", error);
+            cnicCell.textContent = childSnapshot.key;
+            nombreCell.textContent = childSnapshot.val().nombreEmpleado.Nombre;
+            apellidoCell.textContent = childSnapshot.val().nombreEmpleado.Apellido;
+            dptoCell.textContent = childSnapshot.val().departamento;
+        });
+    } else {
+        console.log("No hay datos disponibles");
     }
 }
 
+
+window.onload = () => {
+    initializeTableListener();
+};
+
+// Agrega eventos a los botones
 addBtn.addEventListener('click', AddData);
-retBtn.addEventListener('click', RetData);
-upBtn.addEventListener('click', UpdateData);
-// delBtn.addEventListener('click', DeleteData);
 
 // Inicializar la tabla al cargar la página
 updateTable();     
@@ -257,6 +213,6 @@ function resetSelect() {
 }
 
 
-//registro usuario
+
 
 
