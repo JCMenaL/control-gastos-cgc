@@ -1,6 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    M.AutoInit(); // Inicializa todos los componentes de Materialize
-  });
+
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getDatabase, ref, child, get, set, update, remove } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
@@ -74,33 +72,37 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
 
-//Cambio de pagina
-document.addEventListener('DOMContentLoaded', function() {
-    // Referencia a los elementos de la interfaz
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const loginBtn = document.getElementById('loginBtn');
+  document.addEventListener('DOMContentLoaded', () => {
+    // Referencia a los elementos del formulario de login
+    const emailInput = document.getElementById('loginEmail');
+    const passwordInput = document.getElementById('loginPassword');
+    const loginForm = document.getElementById('loginForm');
 
-    if (emailInput && passwordInput && loginBtn) {
-        // Función para manejar el inicio de sesión
-        loginBtn.addEventListener('click', () => {
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Previene el envío del formulario por defecto
+
             const email = emailInput.value;
             const password = passwordInput.value;
 
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // Usuario autenticado correctamente
-                    window.location.href = 'registro.html'; // Redirigir a otra página
-                })
-                .catch((error) => {
-                    // Manejar errores
-                    console.error('Error al iniciar sesión:', error.message);
-                    alert('Error al iniciar sesión: ' + error.message);
-                });
-        });
-    } 
-});
+            try {
+                // Intentar iniciar sesión con el email y la contraseña proporcionados
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
+                // Mostrar mensaje en la consola y el toast en caso de éxito
+                console.log('Usuario logueado:', userCredential.user);
+                M.toast({ html: 'Login correcto' }); // Toast con mensaje de éxito
+
+                // Redirigir a otra página después del login exitoso
+                window.location.href = 'registro.html'; // Redirigir a la página deseada
+            } catch (error) {
+                // Mostrar mensaje de error en caso de falla
+                console.error('Error en el login:', error);
+                M.toast({ html: `Error: ${error.message}` });
+            }
+        });
+    }
+});
 
 let nFactura = document.getElementById("nFactura");
 let foto = document.getElementById("foto");
