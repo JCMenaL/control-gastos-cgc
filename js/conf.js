@@ -30,6 +30,28 @@ async function createUserCollection(user) {
   console.log('Colección de usuario creada con meses.');
 }
 
+// Manejo del registro de usuario
+document.addEventListener('DOMContentLoaded', () => {
+  const registerForm = document.getElementById('registerForm');
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        await createUserCollection(user);
+        console.log('Usuario registrado y colección creada:', user);
+        M.toast({ html: 'Registro exitoso y colección creada' });
+        registerForm.reset();
+      } catch (error) {
+        console.error('Error en el registro:', error);
+        M.toast({ html: `Error: ${error.message}` });
+      }
+    });
+  }
+});
 // Función para cargar el mes seleccionado del localStorage
 function loadSelectedMonth() {
   const selectedMonth = localStorage.getItem('Date');
@@ -123,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
   // Manejo del inicio de sesión
   const loginForm = document.getElementById('loginForm');
   if (loginForm) {
@@ -182,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
           M.toast({ html: 'Gasto agregado correctamente' });
           agregarDatosForm.reset(); // Limpiar el formulario después de agregar datos
           // Mostrar registros del mes actualizado
-          mostrarRegistros(mes);
         } else {
           M.toast({ html: 'No estás autenticado' });
         }
