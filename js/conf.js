@@ -94,12 +94,12 @@ async function mostrarRegistros(mes) {
   }
 
   const registrosContenedor = document.getElementById('registrosLista');
-  if (!registrosContenedor) {
-    console.error('Contenedor de registros no encontrado en el DOM.');
+  const totalMontoContenedor = document.getElementById('totalMonto'); // Asegúrate de tener este elemento en tu HTML
+  if (!registrosContenedor || !totalMontoContenedor) {
+    console.error('Contenedor de registros o total de monto no encontrado en el DOM.');
     return;
   }
 
-  // Si no se proporciona un mes, usa el mes actual
   if (!mes) {
     mes = obtenerMesActual();
   }
@@ -111,30 +111,42 @@ async function mostrarRegistros(mes) {
   }
 
   try {
-    // Mostrar el nombre del mes
     registrosContenedor.innerHTML = `<h5>Registros de ${mes}</h5>`;
+    let totalMonto = 0;
 
     const querySnapshot = await getDocs(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`));
     if (querySnapshot.empty) {
       registrosContenedor.innerHTML += '<p>No hay registros para el mes seleccionado.</p>';
+      totalMontoContenedor.innerHTML = '<p>Total: ₡0.00</p>';
       return;
     }
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      const montoFormateado = data.monto.toLocaleString('es-CR', { style: 'currency', currency: 'CRC' });
+      totalMonto += data.monto; // Sumar el monto de cada documento
+      
+      // Manejo de la fecha de creación
+      let fechaCreacion = '';
+      if (data.fechaCreacion && data.fechaCreacion.toDate) {
+        fechaCreacion = data.fechaCreacion.toDate().toLocaleString();
+      } else {
+        fechaCreacion = 'Fecha no disponible';
+      }
 
       const gastoItem = `
         <div class="gasto-item">
           <p><strong>Tipo de Gasto:</strong> ${data.tipoGasto}</p>
           <p><strong>Número de Factura:</strong> ${data.numeroFactura}</p>
-          <p><strong>Monto:</strong> ${montoFormateado}</p>
+          <p><strong>Monto:</strong> ₡${data.monto.toLocaleString('es-CR', { minimumFractionDigits: 2 })}</p>
+          <p><strong>Fecha de Creación:</strong> ${fechaCreacion}</p>
           <p><strong>Foto:</strong> <a href="${data.foto}" target="_blank">Ver Foto</a></p>
         </div>
         <hr />
       `;
       registrosContenedor.innerHTML += gastoItem;
     });
+
+    totalMontoContenedor.innerHTML = `<p>Total: ₡${totalMonto.toLocaleString('es-CR', { minimumFractionDigits: 2 })}</p>`;
   } catch (error) {
     console.error('Error al mostrar los registros:', error);
     M.toast({ html: `Error: ${error.message}` });
