@@ -1,13 +1,16 @@
 // Importar las funciones necesarias de Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+
 import {
   getFirestore,
   doc,
   setDoc,
   collection,
   addDoc,
-  getDocs, Timestamp
+  getDocs,
+  Timestamp,
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -51,7 +54,7 @@ async function createUserCollection(user) {
     const monthRef = doc(userRef, "meses", month);
     await setDoc(monthRef, { nombre: month });
   }
-  console.log("Colección de usuario creada con meses.");
+  console.log("Colección de usuario creada.");
 }
 
 // Manejo del registro de usuario
@@ -132,7 +135,7 @@ async function mostrarRegistros(mes) {
   }
 
   const registrosContenedor = document.getElementById("registrosLista");
-  const totalMontoContenedor = document.getElementById("totalMonto"); // Asegúrate de tener este elemento en tu HTML
+  const totalMontoContenedor = document.getElementById("totalMonto");
   if (!registrosContenedor || !totalMontoContenedor) {
     console.error(
       "Contenedor de registros o total de monto no encontrado en el DOM."
@@ -267,7 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
               numeroFactura: numeroFactura,
               monto: Number(monto),
               foto: foto,
-              fechaCreacion: Timestamp.now() // Almacenar la fecha de creación
+              fechaCreacion: Timestamp.now(), // Almacenar la fecha de creación
             }
           );
           console.log("Documento añadido con ID: ", docRef.id);
