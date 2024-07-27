@@ -54,11 +54,20 @@ function saveSelectedMonth() {
   }
 }
 
+// Función para obtener el mes actual en formato "Mes"
+function obtenerMesActual() {
+  const meses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+  const fechaActual = new Date();
+  return meses[fechaActual.getMonth()];
+}
+
 // Función para mostrar los registros del mes seleccionado
 async function mostrarRegistros(mes) {
   const user = auth.currentUser;
   if (!user) {
-    M.toast({ html: 'No estás autenticado' });
     return;
   }
 
@@ -68,6 +77,11 @@ async function mostrarRegistros(mes) {
     return;
   }
 
+  // Si no se proporciona un mes, usa el mes actual
+  if (!mes) {
+    mes = obtenerMesActual();
+  }
+
   if (!mes) {
     console.error('El mes seleccionado no es válido.');
     registrosContenedor.innerHTML = '<p>Selecciona un mes válido.</p>';
@@ -75,11 +89,12 @@ async function mostrarRegistros(mes) {
   }
 
   try {
-    const querySnapshot = await getDocs(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`));
-    registrosContenedor.innerHTML = ''; // Limpiar contenido previo
+    // Mostrar el nombre del mes
+    registrosContenedor.innerHTML = `<h5>Registros de ${mes}</h5>`;
 
+    const querySnapshot = await getDocs(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`));
     if (querySnapshot.empty) {
-      registrosContenedor.innerHTML = '<p>No hay registros para el mes seleccionado.</p>';
+      registrosContenedor.innerHTML += '<p>No hay registros para el mes seleccionado.</p>';
       return;
     }
 
@@ -102,27 +117,11 @@ async function mostrarRegistros(mes) {
   }
 }
 
-// Manejo del registro de usuario
+// Llamada a mostrarRegistros con el mes actual al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
-  const registerForm = document.getElementById('registerForm');
-  if (registerForm) {
-    registerForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('registerEmail').value;
-      const password = document.getElementById('registerPassword').value;
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        await createUserCollection(user);
-        console.log('Usuario registrado y colección creada:', user);
-        M.toast({ html: 'Registro exitoso y colección creada' });
-        registerForm.reset();
-      } catch (error) {
-        console.error('Error en el registro:', error);
-        M.toast({ html: `Error: ${error.message}` });
-      }
-    });
-  }
+  mostrarRegistros(); // Mostrar registros del mes actual si no se pasa un mes específico
+
+
 
   // Manejo del inicio de sesión
   const loginForm = document.getElementById('loginForm');
