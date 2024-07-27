@@ -54,9 +54,18 @@
           <label>Mes</label>
         </div>
         <div class="input-field col s12">
-          <input type="text" id="tipoGasto" class="validate" required />
-          <label for="tipoGasto">Tipo de Gasto</label>
-        </div>
+  <select id="tipoGasto" required>
+    <option value="" disabled selected>Selecciona el tipo de gasto</option>
+    <option value="Combustibre">Combustible</option>
+    <option value="Alimentacion">Alimentacion</option>
+    <option value="Hospedaje">Hospedaje</option>
+    <option value="Reparacion de vehiculo">Reparacion de vehiculo</option>
+    <option value="Otros gastos">Otros gastos</option>
+
+    <!-- Agrega más opciones según sea necesario -->
+  </select>
+  <label for="tipoGasto">Tipo de Gasto</label>
+</div>
         <div class="input-field col s12">
           <input type="text" id="numeroFactura" class="validate" required />
           <label for="numeroFactura">Número de Factura</label>
