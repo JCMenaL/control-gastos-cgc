@@ -68,6 +68,12 @@ async function mostrarRegistros(mes) {
     return;
   }
 
+  if (!mes) {
+    console.error('El mes seleccionado no es válido.');
+    registrosContenedor.innerHTML = '<p>Selecciona un mes válido.</p>';
+    return;
+  }
+
   try {
     const querySnapshot = await getDocs(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`));
     registrosContenedor.innerHTML = ''; // Limpiar contenido previo
