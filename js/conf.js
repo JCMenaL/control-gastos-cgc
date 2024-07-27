@@ -122,11 +122,13 @@ async function mostrarRegistros(mes) {
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
+      const montoFormateado = data.monto.toLocaleString('es-CR', { style: 'currency', currency: 'CRC' });
+
       const gastoItem = `
         <div class="gasto-item">
           <p><strong>Tipo de Gasto:</strong> ${data.tipoGasto}</p>
           <p><strong>Número de Factura:</strong> ${data.numeroFactura}</p>
-          <p><strong>Monto:</strong> ${data.monto}</p>
+          <p><strong>Monto:</strong> ${montoFormateado}</p>
           <p><strong>Foto:</strong> <a href="${data.foto}" target="_blank">Ver Foto</a></p>
         </div>
         <hr />
