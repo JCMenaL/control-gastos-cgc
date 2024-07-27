@@ -32,7 +32,7 @@ async function createUserCollection(user) {
 
 // Función para cargar el mes seleccionado del localStorage
 function loadSelectedMonth() {
-  const selectedMonth = localStorage.getItem('selectedMonth');
+  const selectedMonth = localStorage.getItem('Date');
   if (selectedMonth) {
     const mesSelect = document.getElementById('mesSelect');
     if (mesSelect) {
