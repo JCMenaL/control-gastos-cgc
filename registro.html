@@ -74,7 +74,7 @@
           </div>
           <div class="input-field col s12">
             <div class="file-field input-field">
-              <div class="btn light-blue darken-1">
+              <div class="btn light-blue darken-1" id="subirFotoBtn">
                 <span>Subir Foto</span>
                 <input type="file" id="foto" accept="image/*" capture="camera" required />
               </div>
@@ -83,21 +83,21 @@
               </div>
             </div>
           </div>
+          <div class="col s12 center-align">
+            <button class="btn waves-effect waves-light green" id="agregarBtn" type="submit">Agregar</button>
           </div>
-          <button class="btn waves-effect waves-light light-blue darken-1" type="submit">Agregar</button>
         </form>
       </div>
     </div>
   </div>
   <!-- Contenedor para mostrar registros -->
   <div class="container">
-
     <div id="registrosContenedor" class="container">
-      <div class="card-panel blue lighten-4 center-align">
+      <div class="card-panel blue lighten-4 " id="totalGastos">
         <h5 class="black-text">Total de Gastos</h5>
         <h4 class="teal-text text-darken-3" id="totalMonto"></h4>
       </div>
-      <div class="card-panel light-blue lighten-5 ">
+      <div class="card-panel white " id="listaResumen">
         <div id="registrosLista"></div>
       </div>
     </div>

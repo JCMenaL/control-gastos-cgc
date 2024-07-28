@@ -35,16 +35,64 @@ tr:nth-child(even) {
 
 /* Estilo personalizado para el nav */
 nav {
-    border-radius: 10px; 
+    border-radius: 0px 0px 6px 6px; 
     overflow: hidden; 
 }
 
-/*Botones de index.html*/
+.button-custom {
+  width: 100%;
+  max-width: 300px; /* Ancho máximo para cada botón */
+  height: 100%;
+  max-height: 60px;
+  border-radius: 10px; /* Redondear esquinas */
+  padding: 12px 20px; /* Espaciado interno */
+  background-color: hsl(0, 100%, 100%); /* Cambiar color de fondo */
+  color: rgb(70, 68, 68); /* Cambiar color del texto */
+  text-align: center; /* Centrar texto */
+}
+
 .button-list li {
-    margin-bottom: 20px;
+  margin-bottom: 20px; /* Espaciado entre los botones */
+}
+
+.button-list a:hover {
+  background-color: #616161; /* Color de fondo al pasar el mouse */
+}
+
+#subirFotoBtn {
+    width: 100%;
+    max-width: 80px; /* Ancho máximo para cada botón */
+    height: 100%;
+    max-height: 40px;
+    border-radius: 8px ; /* Redondear esquinas */
+    padding: 1px; /* Espaciado interno */
+    color: rgb(252, 249, 249); /* Cambiar color del texto */
+    text-align: center; /* Centrar texto */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+
+  }
+
+  #agregarBtn {
+    width: 100%;
+    max-width: 100px; /* Ancho máximo para cada botón */
+    height: 100%;
+    max-height: 40px;
+    border-radius: 8px ; /* Redondear esquinas */
+    padding: 1px; /* Espaciado interno */
+    color: rgb(252, 249, 249); /* Cambiar color del texto */
+    text-align: center; /* Centrar texto */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+
+  }
+
+  #totalGastos {
+    border-radius: 10px ; /* Redondear esquinas */
+    text-align: center; /* Centrar texto */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+
   }
   
-  .button-list a {
-    width: 100%;
-    max-width: 300px; /* Ajusta el tamaño máximo de los botones */
+  #listaResumen {
+    border-radius: 10px; /* Redondear esquinas */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
   }
