@@ -17,7 +17,7 @@
   <!-- Navbar -->
   <div class="row">
     <nav>
-      <div class="nav-wrapper">
+      <div class="nav-wrapper light-blue darken-3">
         <a href="#" class="brand-logo">
           <h5>Registro Gastos</h5>
         </a>
@@ -73,10 +73,18 @@
             <label for="monto">Monto ₡</label>
           </div>
           <div class="input-field col s12">
-            <input type="text" id="foto" class="validate" required />
-            <label for="foto">Foto URL</label>
+            <div class="file-field input-field">
+              <div class="btn light-blue darken-1">
+                <span>Subir Foto</span>
+                <input type="file" id="foto" accept="image/*" capture="camera" required />
+              </div>
+              <div class="file-path-wrapper ">
+                <input class="file-path validate" type="text" placeholder="Subir o tomar una foto" />
+              </div>
+            </div>
           </div>
-          <button class="btn waves-effect waves-light" type="submit">Agregar</button>
+          </div>
+          <button class="btn waves-effect waves-light light-blue darken-1" type="submit">Agregar</button>
         </form>
       </div>
     </div>

@@ -38,3 +38,13 @@ nav {
     border-radius: 10px; 
     overflow: hidden; 
 }
+
+/*Botones de index.html*/
+.button-list li {
+    margin-bottom: 20px;
+  }
+  
+  .button-list a {
+    width: 100%;
+    max-width: 300px; /* Ajusta el tamaño máximo de los botones */
+  }

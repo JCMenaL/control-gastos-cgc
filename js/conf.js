@@ -1,6 +1,5 @@
 // Importar las funciones necesarias de Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-
 import {
   getFirestore,
   doc,
@@ -10,12 +9,12 @@ import {
   getDocs,
   Timestamp,
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -32,6 +31,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);  
+
 
 // Función para crear una colección del usuario
 async function createUserCollection(user) {
@@ -284,6 +285,46 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Error al agregar el gasto:", error);
         M.toast({ html: `Error: ${error.message}` });
       }
+    });
+  }
+});
+
+
+// Capturar el archivo seleccionado
+document.getElementById('foto').addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // Crear una referencia a la ubicación donde se almacenará la imagen
+    const storageRef = ref(storage, `fotos/${file.name}`);
+    uploadBytes(storageRef, file).then((snapshot) => {
+      console.log('Subida completada:', snapshot);
+
+      // Obtener la URL de descarga
+      getDownloadURL(snapshot.ref).then((downloadURL) => {
+        console.log('Archivo disponible en:', downloadURL);
+        // Puedes almacenar esta URL en tu base de datos o usarla según necesites
+      });
+    }).catch((error) => {
+      console.error('Error al subir la imagen:', error);
+    });
+  }
+});
+// Capturar el archivo seleccionado
+document.getElementById('foto').addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // Crear una referencia a la ubicación donde se almacenará la imagen
+    const storageRef = ref(storage, `fotos/${file.name}`);
+    uploadBytes(storageRef, file).then((snapshot) => {
+      console.log('Subida completada:', snapshot);
+
+      // Obtener la URL de descarga
+      getDownloadURL(snapshot.ref).then((downloadURL) => {
+        console.log('Archivo disponible en:', downloadURL);
+        // Puedes almacenar esta URL en tu base de datos o usarla según necesites
+      });
+    }).catch((error) => {
+      console.error('Error al subir la imagen:', error);
     });
   }
 });
