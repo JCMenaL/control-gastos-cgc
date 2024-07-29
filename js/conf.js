@@ -25,7 +25,7 @@ const firebaseConfig = {
   storageBucket: "cofersa-f5a80.appspot.com",
   messagingSenderId: "471398985252",
   appId: "1:471398985252:web:792b7318f26cffeb0a32b1",
-};
+}
 
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
@@ -33,6 +33,20 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);  
 
+
+
+
+// Agregar un evento para manejar la subida de archivos
+document.getElementById('agregarBtn').addEventListener('click', () => {
+  const fileInput = document.getElementById('foto');
+  
+  if (foto.files && foto.files.length > 0) {
+    const file = foto.files[0];
+    uploadFile(file);
+  } else {
+    console.error('No se ha seleccionado ningún archivo.');
+  }
+});
 
 // Función para crear una colección del usuario
 async function createUserCollection(user) {
@@ -180,7 +194,9 @@ async function mostrarRegistros(mes) {
         fechaCreacion = "Fecha no disponible";
       }
 
-      //
+      // Verifica la URL de la foto
+      console.log(`URL de la foto: ${data.foto}`);
+
       const gastoItem = `<div class="gasto-item">
           <p><strong>Tipo de Gasto:</strong> ${data.tipoGasto}</p>
           <p><strong>Número de Factura:</strong> ${data.numeroFactura}</p>
@@ -188,9 +204,7 @@ async function mostrarRegistros(mes) {
             minimumFractionDigits: 0,
           })}</p>
           <p><strong>Fecha de Creación:</strong> ${fechaCreacion}</p>
-          <p><strong>Foto:</strong> <a href="${
-            data.foto
-          }" target="_blank">Ver Foto</a></p>
+          <p><strong>Foto:</strong> <a href="${data.foto}" target="_blank">Ver Foto</a></p>
         </div>
         <hr />
       `;
@@ -309,22 +323,52 @@ document.getElementById('foto').addEventListener('change', (event) => {
     });
   }
 });
-// Capturar el archivo seleccionado
-document.getElementById('foto').addEventListener('change', (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    // Crear una referencia a la ubicación donde se almacenará la imagen
-    const storageRef = ref(storage, `fotos/${file.name}`);
-    uploadBytes(storageRef, file).then((snapshot) => {
-      console.log('Subida completada:', snapshot);
 
-      // Obtener la URL de descarga
-      getDownloadURL(snapshot.ref).then((downloadURL) => {
-        console.log('Archivo disponible en:', downloadURL);
-        // Puedes almacenar esta URL en tu base de datos o usarla según necesites
-      });
-    }).catch((error) => {
-      console.error('Error al subir la imagen:', error);
-    });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const fileInput = document.getElementById('foto');
+  const addBtn = document.getElementById('agregarBtn');
+  const fileLink = document.getElementById('fileLink');
+
+  if (!fileInput || !addBtn || !fileLink) {
+    console.error('Uno o más elementos no se encontraron en el DOM.');
+    return;
+  }
+
+  const uploadFile = async (file) => {
+    const storageRef = ref(storage, `fotos/${file.name}`);
+    
+    try {
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      console.log(`Archivo disponible en: ${downloadURL}`);
+
+      fileLink.href = downloadURL;
+      fileLink.textContent = 'Ver Foto';
+      fileLink.style.display = 'inline';
+    } catch (error) {
+      console.error('Error al subir archivo:', error);
+    }
+  };
+
+  agregarBtn.addEventListener('click', (event) => {
+    event.preventDefault(); // Previene el envío del formulario
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      uploadFile(file);
+    } else {
+      console.error('No se ha seleccionado ningún archivo.');
+    }
+  });
+});
+
+agregarBtn.addEventListener('click', (event) => {
+  event.preventDefault(); // Previene el envío del formulario
+  if (foto.files && foto.files.length > 0) {
+    const file = foto.files[0];
+    uploadFile(file);
+  } else {
+    console.error('No se ha seleccionado ningún archivo.');
   }
 });
