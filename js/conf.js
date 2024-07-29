@@ -36,17 +36,7 @@ const storage = getStorage(app);
 
 
 
-// Agregar un evento para manejar la subida de archivos
-document.getElementById('agregarBtn').addEventListener('click', () => {
-  const fileInput = document.getElementById('foto');
-  
-  if (foto.files && foto.files.length > 0) {
-    const file = foto.files[0];
-    uploadFile(file);
-  } else {
-    console.error('No se ha seleccionado ningún archivo.');
-  }
-});
+
 
 // Función para crear una colección del usuario
 async function createUserCollection(user) {
@@ -351,24 +341,5 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Error al subir archivo:', error);
     }
   };
-
-  agregarBtn.addEventListener('click', (event) => {
-    event.preventDefault(); // Previene el envío del formulario
-    if (fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      uploadFile(file);
-    } else {
-      console.error('No se ha seleccionado ningún archivo.');
-    }
-  });
 });
 
-agregarBtn.addEventListener('click', (event) => {
-  event.preventDefault(); // Previene el envío del formulario
-  if (foto.files && foto.files.length > 0) {
-    const file = foto.files[0];
-    uploadFile(file);
-  } else {
-    console.error('No se ha seleccionado ningún archivo.');
-  }
-});

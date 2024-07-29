@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('foto');
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      // Tu lógica de subida de archivos aquí
+    });
+  });
+  
+  document.addEventListener('DOMContentLoaded', () => {
     M.AutoInit(); // Inicializa todos los componentes de Materialize
     // Inicializa el elemento select
     const elems = document.querySelectorAll('select');
@@ -20,10 +28,3 @@ document.addEventListener('DOMContentLoaded', function() {
     var instances = M.Modal.init(elems, {});
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const fileInput = document.getElementById('foto');
-    fileInput.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      // Tu lógica de subida de archivos aquí
-    });
-  });
