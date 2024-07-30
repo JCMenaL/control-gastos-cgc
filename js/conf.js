@@ -159,7 +159,7 @@ async function mostrarRegistros(mes) {
   }
 
   try {
-    registrosContenedor.innerHTML = `<h5>Registros de ${mes}</h5>`;
+    registrosContenedor.innerHTML = `<h5>Registros de: ${mes}</h5>`;
     let totalMonto = 0;
 
     const querySnapshot = await getDocs(
@@ -201,9 +201,9 @@ async function mostrarRegistros(mes) {
       registrosContenedor.innerHTML += gastoItem;
     });
 
-    totalMontoContenedor.innerHTML = `<p>Total: ₡${totalMonto.toLocaleString(
+    totalMontoContenedor.innerHTML = `<p>Total registrado: ₡${totalMonto.toLocaleString(
       "es-CR",
-      { minimumFractionDigits: 2 }
+      { minimumFractionDigits: 0 }
     )}</p>`;
   } catch (error) {
     console.error("Error al mostrar los registros:", error);
@@ -293,53 +293,42 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
-// Capturar el archivo seleccionado
-document.getElementById('foto').addEventListener('change', (event) => {
+//Subir y guardar imagen de gasto
+document.getElementById('foto').addEventListener('change', async (event) => {
   const file = event.target.files[0];
   if (file) {
-    // Crear una referencia a la ubicación donde se almacenará la imagen
-    const storageRef = ref(storage, `fotos/${file.name}`);
-    uploadBytes(storageRef, file).then((snapshot) => {
-      console.log('Subida completada:', snapshot);
-
-      // Obtener la URL de descarga
-      getDownloadURL(snapshot.ref).then((downloadURL) => {
-        console.log('Archivo disponible en:', downloadURL);
-        // Puedes almacenar esta URL en tu base de datos o usarla según necesites
-      });
-    }).catch((error) => {
-      console.error('Error al subir la imagen:', error);
-    });
-  }
-});
-
-
-document.addEventListener('DOMContentLoaded', () => {
-  const fileInput = document.getElementById('foto');
-  const addBtn = document.getElementById('agregarBtn');
-  const fileLink = document.getElementById('fileLink');
-
-  if (!fileInput || !addBtn || !fileLink) {
-    console.error('Uno o más elementos no se encontraron en el DOM.');
-    return;
-  }
-
-  const uploadFile = async (file) => {
-    const storageRef = ref(storage, `fotos/${file.name}`);
-    
     try {
+      // Crear una referencia a la ubicación donde se almacenará la imagen
+      const storageRef = ref(storage, `fotos/${file.name}`);
+      
+      // Subir el archivo
       const snapshot = await uploadBytes(storageRef, file);
+      console.log('Subida completada:', snapshot);
+      
+      // Obtener la URL de descarga
       const downloadURL = await getDownloadURL(snapshot.ref);
-
-      console.log(`Archivo disponible en: ${downloadURL}`);
-
-      fileLink.href = downloadURL;
-      fileLink.textContent = 'Ver Foto';
-      fileLink.style.display = 'inline';
+      console.log('Archivo disponible en:', downloadURL);
+      
+      // Almacenar la URL en la base de datos
+      // Obtén la referencia del documento del gasto, por ejemplo:
+      const user = auth.currentUser;
+      if (user) {
+        const mes = document.getElementById("mesSelect").value;
+        const tipoGasto = document.getElementById("tipoGasto").value;
+        const numeroFactura = document.getElementById("numeroFactura").value;
+        const monto = document.getElementById("monto").value;
+        
+        await addDoc(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`), {
+          tipoGasto: tipoGasto,
+          numeroFactura: numeroFactura,
+          monto: Number(monto),
+          foto: downloadURL, // Guardar la URL de descarga aquí
+          fechaCreacion: Timestamp.now(),
+        });
+        console.log('Datos y URL de la imagen guardados en Firestore');
+      }
     } catch (error) {
-      console.error('Error al subir archivo:', error);
+      console.error('Error al subir la imagen:', error);
     }
-  };
+  }
 });
-
