@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("agregarDatosForm").addEventListener("submit", agregarGastoConFoto);
 })  
 
-
+//genera el pdf y su configuracion
 document.addEventListener("DOMContentLoaded", () => {
   const { jsPDF } = window.jspdf;
 
@@ -373,20 +373,44 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
       const lineHeight = 10;
       const imageWidth = 50;
       const imageHeight = 50;
       const maxY = 250; // Ajusta el límite de la página según sea necesario
 
-      // Encabezado
+      // Encabezado centrado
       doc.setFontSize(16);
-      doc.text('Informe de Gastos', 10, 10);
+      let text = 'Informe de Gastos';
+      let textWidth = doc.getTextWidth(text);
+      let x = (pageWidth - textWidth) / 2;
+      doc.text(text, x, 10);
+
       doc.setFontSize(12);
-      doc.text(`Usuario: ${user.email}`, 10, 20);
-      doc.text(`Fecha de Generación: ${new Date().toLocaleString()}`, 10, 30);
-      doc.text('-----------------------------', 10, 40);
-      doc.text(`Registros de: ${mes}`, 10, 50);
-      doc.text('-----------------------------', 10, 60);
+      text = `Usuario: ${user.email}`;
+      textWidth = doc.getTextWidth(text);
+      x = (pageWidth - textWidth) / 2;
+      doc.text(text, x, 20);
+
+      text = `Fecha de Generación: ${new Date().toLocaleString()}`;
+      textWidth = doc.getTextWidth(text);
+      x = (pageWidth - textWidth) / 2;
+      doc.text(text, x, 30);
+
+      text = '-----------------------------';
+      textWidth = doc.getTextWidth(text);
+      x = (pageWidth - textWidth) / 2;
+      doc.text(text, x, 40);
+
+      text = `Registros de: ${mes}`;
+      textWidth = doc.getTextWidth(text);
+      x = (pageWidth - textWidth) / 2;
+      doc.text(text, x, 50);
+
+      text = '-----------------------------';
+      textWidth = doc.getTextWidth(text);
+      x = (pageWidth - textWidth) / 2;
+      doc.text(text, x, 60);
 
       let y = 70;
 
@@ -406,8 +430,8 @@ document.addEventListener("DOMContentLoaded", () => {
         doc.text(`Monto: ₡${data.monto.toLocaleString("es-CR", { minimumFractionDigits: 2 })}`, 10, y + 2 * lineHeight);
         doc.text(`Fecha de Creación: ${data.fechaCreacion.toDate().toLocaleString()}`, 10, y + 3 * lineHeight);
 
-        // Posición para la imagen
-        let imageX = 150; // Ajusta la posición horizontal de la imagen
+        // Posición para la imagen y el enlace
+        let imageX = 120; // Ajusta la posición horizontal de la imagen
         let imageY = y;
 
         // Añadir imagen
@@ -419,7 +443,10 @@ document.addEventListener("DOMContentLoaded", () => {
               doc.addPage();
               y = 10; // Reiniciar la posición vertical para la nueva página
             }
-            doc.addImage(imageUrl, 'JPEG', imageX, imageY, imageWidth, imageHeight); // Ajustar posición y tamaño según sea necesario
+            doc.addImage(imageUrl, 'PNG', imageX, imageY, imageWidth, imageHeight); // Ajustar posición y tamaño según sea necesario
+
+            // Añadir enlace a la imagen
+            doc.link(imageX, imageY, imageWidth, imageHeight, { url: data.foto });
             y += imageHeight + 10; // Espacio adicional después de la imagen
           }
         } else {
@@ -427,8 +454,11 @@ document.addEventListener("DOMContentLoaded", () => {
           y += lineHeight + 10; // Espacio adicional si no hay foto
         }
 
-        // Añadir separación entre registros
-        if (y > maxY - 20) { // Dejar espacio al final de la página
+        // Añadir línea divisoria entre registros
+        if (y + lineHeight < maxY) { // Verificar si hay espacio suficiente para la línea
+          doc.line(10, y + lineHeight, pageWidth - 10, y + lineHeight);
+          y += lineHeight + 10; // Espacio después de la línea
+        } else {
           doc.addPage();
           y = 10; // Reiniciar la posición vertical para la nueva página
         }
