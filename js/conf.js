@@ -248,55 +248,199 @@ document.addEventListener("DOMContentLoaded", () => {
   // Guardar el mes seleccionado en el localStorage y mostrar registros
   saveSelectedMonth();
 
-  // Función para manejar la carga de la foto y el registro del gasto
-async function agregarGastoConFoto(event) {
-  event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+  let isSubmitting = false; // Variable global para manejar el estado de envío
 
-  const mes = document.getElementById("mesSelect").value;
-  const tipoGasto = document.getElementById("tipoGasto").value;
-  const numeroFactura = document.getElementById("numeroFactura").value;
-  const monto = document.getElementById("monto").value;
-  const file = document.getElementById("foto").files[0];
-
-  if (!mes || !tipoGasto || !numeroFactura || !monto || !file) {
-    alert("Por favor, completa todos los campos.");
-    return;
-  }
-
-  try {
-    // Subir la foto a Firebase Storage
-    const storageRef = ref(storage, `fotos/${file.name}`);
-    const snapshot = await uploadBytes(storageRef, file);
-    console.log('Subida completada:', snapshot);
-
-    // Obtener la URL de la foto
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    console.log('Archivo disponible en:', downloadURL);
-
-    // Obtener el usuario autenticado
-    const user = auth.currentUser;
-    if (user) {
-      // Agregar el gasto a Firestore
-      await addDoc(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`), {
-        tipoGasto: tipoGasto,
-        numeroFactura: numeroFactura,
-        monto: Number(monto),
-        foto: downloadURL,
-        fechaCreacion: Timestamp.now(),
-      });
-      console.log('Datos y URL de la imagen guardados en Firestore');
-      M.toast({ html: "Gasto agregado correctamente" });
-      // Limpiar el formulario
-      document.getElementById("agregarDatosForm").reset();
-    } else {
-      M.toast({ html: "No estás autenticado" });
+  async function agregarGastoConFoto(event) {
+    event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+  
+    if (isSubmitting) {
+      return; // Evitar múltiples envíos si ya está en proceso
     }
-  } catch (error) {
-    console.error('Error al agregar el gasto:', error);
-    M.toast({ html: `Error: ${error.message}` });
+  
+    isSubmitting = true; // Establecer el indicador de carga
+  
+    // Obtener el formulario y verificar si existe
+    const form = document.getElementById("agregarDatosForm");
+    if (!form) {
+      console.error("Formulario no encontrado.");
+      isSubmitting = false; // Rehabilitar el indicador de carga
+      return;
+    }
+  
+    // Deshabilitar el botón de envío para evitar múltiples envíos
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+      submitButton.disabled = true;
+    } else {
+      console.error("Botón de envío no encontrado.");
+      isSubmitting = false; // Rehabilitar el indicador de carga
+      return;
+    }
+  
+    const mes = document.getElementById("mesSelect").value;
+    const tipoGasto = document.getElementById("tipoGasto").value;
+    const numeroFactura = document.getElementById("numeroFactura").value;
+    const monto = document.getElementById("monto").value;
+    const file = document.getElementById("foto").files[0];
+  
+    if (!mes || !tipoGasto || !numeroFactura || !monto || !file) {
+      alert("Por favor, completa todos los campos.");
+      submitButton.disabled = false; // Habilitar el botón de envío si faltan campos
+      isSubmitting = false; // Rehabilitar el indicador de carga
+      return;
+    }
+  
+    try {
+      // Subir la foto a Firebase Storage
+      const storageRef = ref(storage, `fotos/${file.name}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      console.log('Subida completada:', snapshot);
+  
+      // Obtener la URL de la foto
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log('Archivo disponible en:', downloadURL);
+  
+      // Obtener el usuario autenticado
+      const user = auth.currentUser;
+      if (user) {
+        // Agregar el gasto a Firestore
+        await addDoc(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`), {
+          tipoGasto: tipoGasto,
+          numeroFactura: numeroFactura,
+          monto: Number(monto),
+          foto: downloadURL,
+          fechaCreacion: Timestamp.now(),
+        });
+        console.log('Datos y URL de la imagen guardados en Firestore');
+        M.toast({ html: "Gasto agregado correctamente" });
+        // Limpiar el formulario
+        form.reset();
+      } else {
+        M.toast({ html: "No estás autenticado" });
+      }
+    } catch (error) {
+      console.error('Error al agregar el gasto:', error);
+      M.toast({ html: `Error: ${error.message}` });
+    } finally {
+      // Habilitar el botón de envío después de completar la operación
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+      isSubmitting = false; // Rehabilitar el indicador de carga
+    }
   }
-}
+  
+  // Asignar la función al evento submit del formulario
+  document.getElementById("agregarDatosForm").addEventListener("submit", agregarGastoConFoto);
+})  
 
-// Asignar la función al evento submit del formulario
-document.getElementById("agregarDatosForm").addEventListener("submit", agregarGastoConFoto);
-})
+
+document.addEventListener("DOMContentLoaded", () => {
+  const { jsPDF } = window.jspdf;
+
+  async function obtenerImagenData(url) {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      console.error("Error al obtener la imagen:", error);
+      return null;
+    }
+  }
+
+  async function generarPDF() {
+    const user = auth.currentUser;
+    if (!user) {
+      M.toast({ html: "No estás autenticado" });
+      return;
+    }
+
+    const mes = document.getElementById("mesSelect").value;
+    if (!mes) {
+      M.toast({ html: "Selecciona un mes" });
+      return;
+    }
+
+    try {
+      const querySnapshot = await getDocs(
+        collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`)
+      );
+
+      if (querySnapshot.empty) {
+        M.toast({ html: "No hay registros para el mes seleccionado" });
+        return;
+      }
+
+      const doc = new jsPDF();
+      const lineHeight = 10;
+      const imageWidth = 50;
+      const imageHeight = 50;
+      const maxY = 250; // Ajusta el límite de la página según sea necesario
+
+      // Encabezado
+      doc.setFontSize(16);
+      doc.text('Informe de Gastos', 10, 10);
+      doc.setFontSize(12);
+      doc.text(`Usuario: ${user.email}`, 10, 20);
+      doc.text(`Fecha de Generación: ${new Date().toLocaleString()}`, 10, 30);
+      doc.text('-----------------------------', 10, 40);
+      doc.text(`Registros de: ${mes}`, 10, 50);
+      doc.text('-----------------------------', 10, 60);
+
+      let y = 70;
+
+      for (const docSnap of querySnapshot.docs) {
+        const data = docSnap.data();
+
+        // Verificar si se necesita agregar una nueva página
+        if (y + imageHeight > maxY) {
+          doc.addPage();
+          y = 10; // Reiniciar la posición vertical para la nueva página
+        }
+
+        // Añadir datos del gasto
+        doc.setFontSize(10);
+        doc.text(`Tipo de Gasto: ${data.tipoGasto}`, 10, y);
+        doc.text(`Número de Factura: ${data.numeroFactura}`, 10, y + lineHeight);
+        doc.text(`Monto: ₡${data.monto.toLocaleString("es-CR", { minimumFractionDigits: 2 })}`, 10, y + 2 * lineHeight);
+        doc.text(`Fecha de Creación: ${data.fechaCreacion.toDate().toLocaleString()}`, 10, y + 3 * lineHeight);
+
+        // Posición para la imagen
+        let imageX = 150; // Ajusta la posición horizontal de la imagen
+        let imageY = y;
+
+        // Añadir imagen
+        if (data.foto) {
+          const imageUrl = await obtenerImagenData(data.foto);
+          if (imageUrl) {
+            // Verificar si se necesita agregar una nueva página
+            if (y + imageHeight > maxY) {
+              doc.addPage();
+              y = 10; // Reiniciar la posición vertical para la nueva página
+            }
+            doc.addImage(imageUrl, 'JPEG', imageX, imageY, imageWidth, imageHeight); // Ajustar posición y tamaño según sea necesario
+            y += imageHeight + 10; // Espacio adicional después de la imagen
+          }
+        } else {
+          doc.text('Foto no disponible', 10, y + 4 * lineHeight);
+          y += lineHeight + 10; // Espacio adicional si no hay foto
+        }
+
+        // Añadir separación entre registros
+        if (y > maxY - 20) { // Dejar espacio al final de la página
+          doc.addPage();
+          y = 10; // Reiniciar la posición vertical para la nueva página
+        }
+      }
+
+      doc.save(`Registros_${mes}.pdf`);
+      M.toast({ html: "PDF generado correctamente" });
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+      M.toast({ html: `Error: ${error.message}` });
+    }
+  }
+
+  document.getElementById("exportPDF").addEventListener("click", generarPDF);
+});

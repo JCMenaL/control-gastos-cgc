@@ -74,11 +74,25 @@ nav {
 
   #agregarBtn {
     width: 100%;
-    max-width: 100px; /* Ancho máximo para cada botón */
+    max-width: 130px; /* Ancho máximo para cada botón */
     height: 100%;
-    max-height: 40px;
+    max-height: 70px;
     border-radius: 8px ; /* Redondear esquinas */
     padding: 1px; /* Espaciado interno */
+    color: rgb(252, 249, 249); /* Cambiar color del texto */
+    text-align: center; /* Centrar texto */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
+
+  }
+
+  #exportPDF {
+    width: 100%;
+    max-width: 130px; /* Ancho máximo para cada botón */
+    height: 100%;
+    max-height: 70px;
+    border-radius: 8px ; /* Redondear esquinas */
+    padding: 1px; /* Espaciado interno */
+    background-color: hsl(0, 85%, 51%); /* Cambiar color de fondo */
     color: rgb(252, 249, 249); /* Cambiar color del texto */
     text-align: center; /* Centrar texto */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
