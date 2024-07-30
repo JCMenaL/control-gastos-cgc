@@ -293,7 +293,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-//Subir y guardar imagen de gasto
+
 document.getElementById('foto').addEventListener('change', async (event) => {
   const file = event.target.files[0];
   if (file) {
