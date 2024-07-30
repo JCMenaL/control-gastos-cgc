@@ -248,87 +248,55 @@ document.addEventListener("DOMContentLoaded", () => {
   // Guardar el mes seleccionado en el localStorage y mostrar registros
   saveSelectedMonth();
 
-  // Manejo del formulario para agregar datos
-  const agregarDatosForm = document.getElementById("agregarDatosForm");
-  if (agregarDatosForm) {
-    agregarDatosForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  // Función para manejar la carga de la foto y el registro del gasto
+async function agregarGastoConFoto(event) {
+  event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
 
-      const mes = document.getElementById("mesSelect").value;
-      const tipoGasto = document.getElementById("tipoGasto").value;
-      const numeroFactura = document.getElementById("numeroFactura").value;
-      const monto = document.getElementById("monto").value;
-      const foto = document.getElementById("foto").value;
+  const mes = document.getElementById("mesSelect").value;
+  const tipoGasto = document.getElementById("tipoGasto").value;
+  const numeroFactura = document.getElementById("numeroFactura").value;
+  const monto = document.getElementById("monto").value;
+  const file = document.getElementById("foto").files[0];
 
-      if (!mes || !tipoGasto || !numeroFactura || !monto || !foto) {
-        alert("Por favor, completa todos los campos.");
-        return;
-      }
-
-      try {
-        const user = auth.currentUser;
-        if (user) {
-          const docRef = await addDoc(
-            collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`),
-            {
-              tipoGasto: tipoGasto,
-              numeroFactura: numeroFactura,
-              monto: Number(monto),
-              foto: foto,
-              fechaCreacion: Timestamp.now(), // Almacenar la fecha de creación
-            }
-          );
-          console.log("Documento añadido con ID: ", docRef.id);
-          M.toast({ html: "Gasto agregado correctamente" });
-          agregarDatosForm.reset(); // Limpiar el formulario después de agregar datos
-          // Mostrar registros del mes actualizado
-        } else {
-          M.toast({ html: "No estás autenticado" });
-        }
-      } catch (error) {
-        console.error("Error al agregar el gasto:", error);
-        M.toast({ html: `Error: ${error.message}` });
-      }
-    });
+  if (!mes || !tipoGasto || !numeroFactura || !monto || !file) {
+    alert("Por favor, completa todos los campos.");
+    return;
   }
-});
 
+  try {
+    // Subir la foto a Firebase Storage
+    const storageRef = ref(storage, `fotos/${file.name}`);
+    const snapshot = await uploadBytes(storageRef, file);
+    console.log('Subida completada:', snapshot);
 
-document.getElementById('foto').addEventListener('change', async (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    try {
-      // Crear una referencia a la ubicación donde se almacenará la imagen
-      const storageRef = ref(storage, `fotos/${file.name}`);
-      
-      // Subir el archivo
-      const snapshot = await uploadBytes(storageRef, file);
-      console.log('Subida completada:', snapshot);
-      
-      // Obtener la URL de descarga
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      console.log('Archivo disponible en:', downloadURL);
-      
-      // Almacenar la URL en la base de datos
-      // Obtén la referencia del documento del gasto, por ejemplo:
-      const user = auth.currentUser;
-      if (user) {
-        const mes = document.getElementById("mesSelect").value;
-        const tipoGasto = document.getElementById("tipoGasto").value;
-        const numeroFactura = document.getElementById("numeroFactura").value;
-        const monto = document.getElementById("monto").value;
-        
-        await addDoc(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`), {
-          tipoGasto: tipoGasto,
-          numeroFactura: numeroFactura,
-          monto: Number(monto),
-          foto: downloadURL, // Guardar la URL de descarga aquí
-          fechaCreacion: Timestamp.now(),
-        });
-        console.log('Datos y URL de la imagen guardados en Firestore');
-      }
-    } catch (error) {
-      console.error('Error al subir la imagen:', error);
+    // Obtener la URL de la foto
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    console.log('Archivo disponible en:', downloadURL);
+
+    // Obtener el usuario autenticado
+    const user = auth.currentUser;
+    if (user) {
+      // Agregar el gasto a Firestore
+      await addDoc(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`), {
+        tipoGasto: tipoGasto,
+        numeroFactura: numeroFactura,
+        monto: Number(monto),
+        foto: downloadURL,
+        fechaCreacion: Timestamp.now(),
+      });
+      console.log('Datos y URL de la imagen guardados en Firestore');
+      M.toast({ html: "Gasto agregado correctamente" });
+      // Limpiar el formulario
+      document.getElementById("agregarDatosForm").reset();
+    } else {
+      M.toast({ html: "No estás autenticado" });
     }
+  } catch (error) {
+    console.error('Error al agregar el gasto:', error);
+    M.toast({ html: `Error: ${error.message}` });
   }
-});
+}
+
+// Asignar la función al evento submit del formulario
+document.getElementById("agregarDatosForm").addEventListener("submit", agregarGastoConFoto);
+})
