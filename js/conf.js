@@ -7,14 +7,14 @@ import {
   collection,
   addDoc,
   getDocs,
-  Timestamp,
+  Timestamp, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
+  signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -174,6 +174,7 @@ async function mostrarRegistros(mes) {
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
+      const docId = doc.id; // ID del documento para eliminar
       totalMonto += data.monto; // Sumar el monto de cada documento
 
       // Manejo de la fecha de creación
@@ -185,7 +186,10 @@ async function mostrarRegistros(mes) {
       }
 
       // Verifica la URL de la foto
-      console.log(`URL de la foto: ${data.foto}`);
+      const fotoURL = data.foto;
+      const fotoNombre = fotoURL ? decodeURIComponent(fotoURL.split('/').pop().split('?')[0]) : null; // Decodificar y obtener el nombre del archivo
+      console.log(`URL de la foto: ${fotoURL}`);
+      console.log(`Nombre del archivo: ${fotoNombre}`);
 
       const gastoItem = `<div class="gasto-item">
           <p><strong>Tipo de Gasto:</strong> ${data.tipoGasto}</p>
@@ -194,9 +198,10 @@ async function mostrarRegistros(mes) {
             minimumFractionDigits: 0,
           })}</p>
           <p><strong>Fecha de Creación:</strong> ${fechaCreacion}</p>
-          <p><strong>Foto:</strong> <a href="${data.foto}" target="_blank">Ver Foto</a></p>
+          <p><strong>Foto:</strong> <a href="${fotoURL}" target="_blank">Ver Foto</a></p>
+          <button class="btn eliminar-btn" data-id="${docId}" data-foto="${fotoURL}">Eliminar</button>
+          <hr />
         </div>
-        <hr />
       `;
       registrosContenedor.innerHTML += gastoItem;
     });
@@ -205,6 +210,32 @@ async function mostrarRegistros(mes) {
       "es-CR",
       { minimumFractionDigits: 0 }
     )}</p>`;
+
+    // Añadir eventos para los botones de eliminar
+    document.querySelectorAll('.eliminar-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const docId = button.getAttribute('data-id');
+        const fotoURL = button.getAttribute('data-foto');
+        if (fotoURL && confirm('¿Estás seguro de que deseas eliminar este gasto?')) {
+          try {
+            // Eliminar el documento de Firestore
+            await deleteDoc(doc(db, `usuarios/${user.uid}/meses/${mes}/gastos`, docId));
+
+            // Eliminar el archivo de Storage
+            const fotoNombre = decodeURIComponent(fotoURL.split('/').pop().split('?')[0]); // Decodificar y obtener el nombre del archivo
+            const storageRef = ref(storage, `fotos/${fotoNombre}`);
+            await deleteObject(storageRef);
+
+            M.toast({ html: 'Gasto y foto eliminados correctamente' });
+            mostrarRegistros(mes); // Volver a cargar los registros
+          } catch (error) {
+            console.error('Error al eliminar el gasto:', error);
+            M.toast({ html: `Error: ${error.message}` });
+          }
+        }
+      });
+    });
+
   } catch (error) {
     console.error("Error al mostrar los registros:", error);
     M.toast({ html: `Error: ${error.message}` });
@@ -214,6 +245,7 @@ async function mostrarRegistros(mes) {
 // Llamada a mostrarRegistros con el mes actual al cargar la página
 document.addEventListener("DOMContentLoaded", () => {
   mostrarRegistros(); // Mostrar registros del mes actual si no se pasa un mes específico
+
 
   // Manejo del inicio de sesión
   const loginForm = document.getElementById("loginForm");
@@ -424,7 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Añadir datos del gasto
-        doc.setFontSize(10);
+        doc.setFontSize(12);
         doc.text(`Tipo de Gasto: ${data.tipoGasto}`, 10, y);
         doc.text(`Número de Factura: ${data.numeroFactura}`, 10, y + lineHeight);
         doc.text(`Monto: ₡${data.monto.toLocaleString("es-CR", { minimumFractionDigits: 2 })}`, 10, y + 2 * lineHeight);
@@ -474,3 +506,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("exportPDF").addEventListener("click", generarPDF);
 });
+
+
