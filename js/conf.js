@@ -369,7 +369,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// Genera el PDF y su configuración
 document.addEventListener("DOMContentLoaded", () => {
   const { jsPDF } = window.jspdf;
 
@@ -384,7 +383,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Función para regenerar el token
+  async function regenerarToken() {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        await user.getIdToken(true); // Fuerza la regeneración del token
+        console.log("Token regenerado exitosamente");
+      } else {
+        console.log("No hay usuario autenticado");
+      }
+    } catch (error) {
+      console.error("Error al regenerar el token:", error);
+    }
+  }
+
   async function generarPDF() {
+    await regenerarToken(); // Llamar a la función para regenerar el token
+
     const user = auth.currentUser;
     if (!user) {
       M.toast({ html: "No estás autenticado" });
@@ -520,6 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("exportPDF").addEventListener("click", generarPDF);
 });
+
 
 
 
