@@ -159,7 +159,7 @@ async function mostrarRegistros(mes) {
   }
 
   try {
-    registrosContenedor.innerHTML = `<h5>Registros de: ${mes}</h5>`;
+    registrosContenedor.innerHTML = `<<h5 style="text-align: center; font-weight: bold;">Registros de: ${mes}</h5>`;
     let totalMonto = 0;
 
     const querySnapshot = await getDocs(
@@ -206,7 +206,8 @@ async function mostrarRegistros(mes) {
       registrosContenedor.innerHTML += gastoItem;
     });
 
-    totalMontoContenedor.innerHTML = `<p>Total registrado: ₡${totalMonto.toLocaleString(
+    //Esta linea muestra el total de gastos registrados
+    totalMontoContenedor.innerHTML = `<p> ₡${totalMonto.toLocaleString(
       "es-CR",
       { minimumFractionDigits: 0 }
     )}</p>`;

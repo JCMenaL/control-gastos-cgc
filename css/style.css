@@ -49,6 +49,7 @@ nav {
   background-color: hsl(0, 100%, 100%); /* Cambiar color de fondo */
   color: rgb(70, 68, 68); /* Cambiar color del texto */
   text-align: center; /* Centrar texto */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
 }
 
 .button-list li {
@@ -58,6 +59,8 @@ nav {
 .button-list a:hover {
   background-color: #616161; /* Color de fondo al pasar el mouse */
 }
+
+
 
 #subirFotoBtn {
     width: 100%;
