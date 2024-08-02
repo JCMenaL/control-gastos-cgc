@@ -534,6 +534,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  
   document.getElementById("exportPDF").addEventListener("click", generarPDF);
 });
 
