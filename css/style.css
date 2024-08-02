@@ -60,7 +60,10 @@ nav {
   background-color: #616161; /* Color de fondo al pasar el mouse */
 }
 
-
+.small-image {
+  width: 50%;  /* La imagen ocupará el 50% del contenedor */
+  height: auto;
+}
 
 #subirFotoBtn {
     width: 100%;
