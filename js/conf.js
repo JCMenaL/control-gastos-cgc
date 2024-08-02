@@ -242,10 +242,8 @@ async function mostrarRegistros(mes) {
   }
 }
 
-// Llamada a mostrarRegistros con el mes actual al cargar la página
 document.addEventListener("DOMContentLoaded", () => {
   mostrarRegistros(); // Mostrar registros del mes actual si no se pasa un mes específico
-
 
   // Manejo del inicio de sesión
   const loginForm = document.getElementById("loginForm");
@@ -255,11 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
       try {
-        const userCredential = await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         localStorage.setItem("userEmail", user.email);
         console.log("Usuario logueado:", user);
@@ -303,6 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitButton = form.querySelector('button[type="submit"]');
     if (submitButton) {
       submitButton.disabled = true;
+      submitButton.textContent = "Enviando...";
     } else {
       console.error("Botón de envío no encontrado.");
       isSubmitting = false; // Rehabilitar el indicador de carga
@@ -318,6 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!mes || !tipoGasto || !numeroFactura || !monto || !file) {
       alert("Por favor, completa todos los campos.");
       submitButton.disabled = false; // Habilitar el botón de envío si faltan campos
+      submitButton.textContent = "Agregar Gasto";
       isSubmitting = false; // Rehabilitar el indicador de carga
       return;
     }
@@ -357,16 +353,23 @@ document.addEventListener("DOMContentLoaded", () => {
       // Habilitar el botón de envío después de completar la operación
       if (submitButton) {
         submitButton.disabled = false;
+        submitButton.textContent = "Agregar Gasto";
       }
       isSubmitting = false; // Rehabilitar el indicador de carga
     }
   }
-  
-  // Asignar la función al evento submit del formulario
-  document.getElementById("agregarDatosForm").addEventListener("submit", agregarGastoConFoto);
-})  
 
-//genera el pdf y su configuracion
+  // Asignar el manejador de eventos al formulario
+  const agregarDatosForm = document.getElementById("agregarDatosForm");
+  if (agregarDatosForm) {
+    agregarDatosForm.addEventListener("submit", agregarGastoConFoto);
+  } else {
+    console.error("Formulario agregarDatosForm no encontrado.");
+  }
+});
+
+
+// Genera el PDF y su configuración
 document.addEventListener("DOMContentLoaded", () => {
   const { jsPDF } = window.jspdf;
 
@@ -394,6 +397,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Deshabilitar el botón mientras se genera el PDF
+    const botonGenerarPDF = document.getElementById("exportPDF");
+    botonGenerarPDF.disabled = true;
+    botonGenerarPDF.textContent = "Generando PDF...";
+
     try {
       const querySnapshot = await getDocs(
         collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`)
@@ -401,6 +409,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (querySnapshot.empty) {
         M.toast({ html: "No hay registros para el mes seleccionado" });
+        botonGenerarPDF.disabled = false;
+        botonGenerarPDF.textContent = "Generar PDF";
         return;
       }
 
@@ -501,10 +511,15 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Error al generar el PDF:", error);
       M.toast({ html: `Error: ${error.message}` });
+    } finally {
+      // Habilitar el botón después de generar el PDF
+      botonGenerarPDF.disabled = false;
+      botonGenerarPDF.textContent = "Generar PDF";
     }
   }
 
   document.getElementById("exportPDF").addEventListener("click", generarPDF);
 });
+
 
 

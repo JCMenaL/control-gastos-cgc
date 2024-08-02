@@ -43,9 +43,9 @@ nav {
   width: 100%;
   max-width: 300px; /* Ancho máximo para cada botón */
   height: 100%;
-  max-height: 60px;
+  max-height: 500px;
   border-radius: 10px; /* Redondear esquinas */
-  padding: 12px 20px; /* Espaciado interno */
+  padding: 12px 10px; /* Espaciado interno */
   background-color: hsl(0, 100%, 100%); /* Cambiar color de fondo */
   color: rgb(70, 68, 68); /* Cambiar color del texto */
   text-align: center; /* Centrar texto */
@@ -75,8 +75,8 @@ nav {
   #agregarBtn {
     width: 100%;
     max-width: 130px; /* Ancho máximo para cada botón */
-    height: 100%;
-    max-height: 70px;
+    height: 150%;
+    max-height: 100px;
     border-radius: 8px ; /* Redondear esquinas */
     padding: 1px; /* Espaciado interno */
     color: rgb(252, 249, 249); /* Cambiar color del texto */
