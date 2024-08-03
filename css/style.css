@@ -33,11 +33,7 @@ tr:nth-child(even) {
     margin-top: 5px;
 }
 
-/* Estilo personalizado para el nav */
-nav {
-    border-radius: 0px 0px 6px 6px; 
-    overflow: hidden; 
-}
+
 
 .button-custom {
   width: 100%;
@@ -116,3 +112,6 @@ nav {
     border-radius: 10px; /* Redondear esquinas */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
   }
+
+
+  

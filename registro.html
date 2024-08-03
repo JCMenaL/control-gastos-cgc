@@ -1,132 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro Gastos</title>
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="imagenes/favicon/logo7.png" type="image/png" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro Gastos</title>
-  <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <link rel="stylesheet" href="css/style.css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="icon" href="imagenes/favicon/logo7.png" type="image/png">
-
-</head>
-
-<body>
-
+  <body>
   <!-- Navbar -->
-  <div class="row">
-    <nav>
-    
-      <div class="nav-wrapper light-blue darken-3">
-        <a href="#" class="brand-logo">
-          <h5>Registro Gastos</h5>
-        </a>
-      </div>
-    </nav>
-  </div>
+<div class="row">
+  <nav>
+    <div class="nav-wrapper light-blue darken-3">
+      <a href="#" class="brand-logo">
+        <h5>Registro Gastos</h5>
+      </a>
+      <a href="#" class="sidenav-trigger" data-target="menuHamburguesa">
+        <i class="material-icons">menu</i>
+      </a>
+    </div>
+  </nav>
 
+  <ul id="menuHamburguesa" class="sidenav">
+    <!-- Los elementos del menú se llenarán aquí -->
+  </ul>
+</div>
 
-  <!-- Mostrar el correo aquí -->
-  <div class="col s12 center">
-    <h6>Bienvenido: <span id="userEmail"></span></h6>
-  </div>
-  <!-- Modal para Agregar Datos -->
-  <div clas="container">
-    <div class="row">
-      <div class="col s12">
-        <form id="agregarDatosForm">
-          <div class="input-field col s12">
-            <select id="mesSelect" required>
-              <option value="" disabled selected>Selecciona un mes</option>
-              <option value="Enero">Enero</option>
-              <option value="Febrero">Febrero</option>
-              <option value="Marzo">Marzo</option>
-              <option value="Abril">Abril</option>
-              <option value="Mayo">Mayo</option>
-              <option value="Junio">Junio</option>
-              <option value="Julio">Julio</option>
-              <option value="Agosto">Agosto</option>
-              <option value="Septiembre">Septiembre</option>
-              <option value="Octubre">Octubre</option>
-              <option value="Noviembre">Noviembre</option>
-              <option value="Diciembre">Diciembre</option>
-            </select>
-            <label>Mes</label>
-          </div>
-          <div class="input-field col s12">
-            <select id="tipoGasto" name="tipoGasto" required>
-              <option value="" disabled selected>Selecciona el tipo de gasto</option>
-              <option value="Combustibre">Combustible</option>
-              <option value="Alimentacion">Alimentacion</option>
-              <option value="Hospedaje">Hospedaje</option>
-              <option value="Reparacion de vehiculo">Reparacion de vehiculo</option>
-              <option value="Otros gastos">Otros gastos</option>
-            </select>
-            <label for="tipoGasto">Tipo de Gasto</label>
-          </div>
-          <div class="input-field col s12">
-            <input type="text" id="numeroFactura" class="validate" required />
-            <label for="numeroFactura">Número de Factura</label>
-          </div>
-          <div class="input-field col s12">
-            <input type="number" id="monto" class="validate" required />
-            <label for="monto">Monto ₡</label>
-          </div>
-          <div class="input-field col s12">
-            <div class="file-field input-field">
-              <div class="btn light-blue darken-1" id="subirFotoBtn">
-                <span>Foto</span>
-                <input type="file" id="foto" accept="image/*" capture="camera" required />
-              </div>
-              <div class="file-path-wrapper">
-                <input class="file-path validate" type="text" placeholder="Subir o tomar una foto" />
+    <!-- Mostrar el correo aquí -->
+    <div class="col s12 center">
+      <h6>Bienvenido: <span id="userEmail"></span></h6>
+    </div>
+    <!-- Modal para Agregar Datos -->
+    <div class="container">
+      <div class="row">
+        <div class="col s12">
+          <form id="agregarDatosForm">
+            <div class="input-field col s12">
+              <select id="mesSelect" required>
+                <option value="" disabled selected>Selecciona un mes</option>
+                <option value="Enero">Enero</option>
+                <option value="Febrero">Febrero</option>
+                <option value="Marzo">Marzo</option>
+                <option value="Abril">Abril</option>
+                <option value="Mayo">Mayo</option>
+                <option value="Junio">Junio</option>
+                <option value="Julio">Julio</option>
+                <option value="Agosto">Agosto</option>
+                <option value="Septiembre">Septiembre</option>
+                <option value="Octubre">Octubre</option>
+                <option value="Noviembre">Noviembre</option>
+                <option value="Diciembre">Diciembre</option>
+              </select>
+              <label>Mes</label>
+            </div>
+            <div class="input-field col s12">
+              <select id="tipoGasto" name="tipoGasto" required>
+                <option value="" disabled selected>Selecciona el tipo de gasto</option>
+                <option value="Combustibre">Combustible</option>
+                <option value="Alimentacion">Alimentacion</option>
+                <option value="Hospedaje">Hospedaje</option>
+                <option value="Reparacion de vehiculo">
+                  Reparacion de vehiculo
+                </option>
+                <option value="Otros gastos">Otros gastos</option>
+              </select>
+              <label for="tipoGasto">Tipo de Gasto</label>
+            </div>
+            <div class="input-field col s12">
+              <input type="text" id="numeroFactura" class="validate" required />
+              <label for="numeroFactura">Número de Factura</label>
+            </div>
+            <div class="input-field col s12">
+              <input type="number" id="monto" class="validate" required />
+              <label for="monto">Monto ₡</label>
+            </div>
+            <div class="input-field col s12">
+              <div class="file-field input-field">
+                <div class="btn light-blue darken-1" id="subirFotoBtn">
+                  <span>Foto</span>
+                  <input
+                    type="file"
+                    id="foto"
+                    accept="image/*"
+                    capture="camera"
+                    required
+                  />
+                </div>
+                <div class="file-path-wrapper">
+                  <input
+                    class="file-path validate"
+                    type="text"
+                    placeholder="Subir o tomar una foto"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col s12 center-align">
-            <button class="btn waves-effect waves-light green lighten-1" id="agregarBtn" type="submit">Guardar gasto</button>
-            <button class="btn waves-effect waves-light orange darken-2"id="exportPDF" style="margin-left: 80px;">Generar PDF</button>
-          </div>
-        </form>
+            <div class="col s12 center-align">
+              <button
+                class="btn waves-effect waves-light green lighten-1"
+                id="agregarBtn"
+                type="submit"
+              >
+                Guardar gasto
+              </button>
+              <button
+                class="btn waves-effect waves-light orange darken-2"
+                id="exportPDF"
+                style="margin-left: 80px"
+              >
+                Generar PDF
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Contenedor para mostrar registros -->
-  <div class="container">
-    <div id="registrosContenedor" class="container">
-      <div class="card-panel blue lighten-4 " id="totalGastos">
-        <h5 class="black-text">Total de Gastos</h5>
-        <h4 class="teal-text text-darken-3" id="totalMonto"></h4>
-      </div>
-      
-      <div class="card-panel white " id="listaResumen">
-        <div id="registrosLista"></div>
+    <!-- Contenedor para mostrar registros -->
+    <div class="container">
+      <div id="registrosContenedor" class="container">
+        <div class="card-panel blue lighten-4" id="totalGastos">
+          <h5 class="black-text">Total de Gastos</h5>
+          <h4 class="teal-text text-darken-3" id="totalMonto"></h4>
+        </div>
+
+        <div class="card-panel white" id="listaResumen">
+          <div id="registrosLista"></div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script type="text/javascript" src="js/app.js"></script>
-  <script type="text/javascript" src="js/inicio.js"></script>
-  <script type="module" src="js/conf.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/inicio.js"></script>
+    <script type="module" src="js/conf.js"></script>
 
-  <script>
-    // Recuperar el correo del almacenamiento local y lo muestra en la bienvenida
-    document.addEventListener('DOMContentLoaded', () => {
-      const userEmailElement = document.getElementById('userEmail');
-      const userEmail = localStorage.getItem('userEmail');
-
-      if (userEmailElement && userEmail) {
-        userEmailElement.textContent = userEmail;
-      }
-    });
-  </script>
-</body>
-
+    
+  </body>
 </html>

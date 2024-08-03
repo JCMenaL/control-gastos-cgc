@@ -1,11 +1,6 @@
 
 
-document.addEventListener('DOMContentLoaded', function() {
-      // Inicializar el menú lateral
-   var sidenavElems = document.querySelectorAll('.sidenav');
-   var sidenavInstances = M.Sidenav.init(sidenavElems);
-   
-  });
+
 
   document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('foto');
@@ -15,12 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  document.addEventListener('DOMContentLoaded', () => {
-    M.AutoInit(); // Inicializa todos los componentes de Materialize
-    // Inicializa el elemento select
-    const elems = document.querySelectorAll('select');
-    M.FormSelect.init(elems, {});
-  });
+
 
   document.addEventListener('DOMContentLoaded', () => {
     // Inicializa los modales

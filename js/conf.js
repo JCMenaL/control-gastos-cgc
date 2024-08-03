@@ -7,12 +7,14 @@ import {
   collection,
   addDoc,
   getDocs,
+  getDoc,
   Timestamp, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword, 
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
 
@@ -35,7 +37,60 @@ const storage = getStorage(app);
 
 
 
+async function cargarDatosMenuHamburguesa() {
+  const user = auth.currentUser;
+  if (!user) {
+    console.log("No hay usuario autenticado");
+    return;
+  }
 
+  const months = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  try {
+    const userRef = doc(db, "usuarios", user.uid);
+
+    // Limpia el contenido del menú
+    const menu = document.getElementById('menuHamburguesa');
+    menu.innerHTML = '';
+
+    for (const month of months) {
+      const monthRef = doc(userRef, "meses", month);
+      const docSnap = await getDoc(monthRef);
+
+      console.log(`Datos para el mes ${month}:`, docSnap.data());
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const presupuesto = data.presupuesto || 0;
+
+        const menuItem = document.createElement('li');
+        menuItem.textContent = `${month}: ₡${presupuesto.toLocaleString("es-CR", { minimumFractionDigits: 2 })}`;
+        menu.appendChild(menuItem);
+      } else {
+        console.error(`No se encontró el documento para el mes ${month}`);
+      }
+    }
+  } catch (error) {
+    console.error("Error al obtener datos del mes:", error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await cargarDatosMenuHamburguesa();
+});
 
 
 // Función para crear una colección del usuario
@@ -132,6 +187,22 @@ function obtenerMesActual() {
   return meses[fechaActual.getMonth()];
 }
 
+// Inicialización de Materialize
+document.addEventListener('DOMContentLoaded', function() {
+  const elems = document.querySelectorAll('select');
+  M.FormSelect.init(elems);
+  M.Sidenav.init(document.querySelectorAll('.sidenav'));
+
+  const tabs = document.querySelectorAll('.tabs');
+  M.Tabs.init(tabs);
+
+  const userEmailElement = document.getElementById("userEmail");
+  const userEmail = localStorage.getItem("userEmail");
+
+  if (userEmailElement && userEmail) {
+    userEmailElement.textContent = userEmail;
+  }
+});
 // Función para mostrar los registros del mes seleccionado
 async function mostrarRegistros(mes) {
   const user = auth.currentUser;
