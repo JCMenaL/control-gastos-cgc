@@ -283,14 +283,17 @@ function obtenerMesActual() {
 async function mostrarRegistros(mes) {
   const user = auth.currentUser;
   if (!user) {
+    console.error("No hay usuario autenticado.");
     return;
   }
 
   const registrosContenedor = document.getElementById("registrosLista");
   const totalMontoContenedor = document.getElementById("totalMonto");
-  if (!registrosContenedor || !totalMontoContenedor) {
+  const presupuestoContenedor = document.getElementById("presupuestoMonto"); // Contenedor para el presupuesto
+  
+  if (!registrosContenedor || !totalMontoContenedor || !presupuestoContenedor) {
     console.error(
-      "Contenedor de registros o total de monto no encontrado en el DOM."
+      "Contenedor de registros, total de monto o presupuesto no encontrado en el DOM."
     );
     return;
   }
@@ -306,8 +309,21 @@ async function mostrarRegistros(mes) {
   }
 
   try {
-    registrosContenedor.innerHTML = `<<h5 style="text-align: center; font-weight: bold;">Registros de: ${mes}</h5>`;
+    registrosContenedor.innerHTML = `<h5 style="text-align: center; font-weight: bold;">Registros de: ${mes}</h5>`;
     let totalMonto = 0;
+
+    // Obtener el presupuesto del mes seleccionado
+    const userRef = doc(db, "usuarios", user.uid);
+    const monthRef = doc(userRef, "meses", mes);
+    const docSnap = await getDoc(monthRef);
+
+    let presupuesto = 0;
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      presupuesto = data.presupuesto || 0;
+    } else {
+      console.error(`No se encontró el documento para el mes ${mes}`);
+    }
 
     const querySnapshot = await getDocs(
       collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`)
@@ -316,6 +332,7 @@ async function mostrarRegistros(mes) {
       registrosContenedor.innerHTML +=
         "<p>No hay registros para el mes seleccionado.</p>";
       totalMontoContenedor.innerHTML = "<p>Total: ₡0.00</p>";
+     
       return;
     }
 
@@ -323,10 +340,6 @@ async function mostrarRegistros(mes) {
       const data = doc.data();
       const docId = doc.id; // ID del documento para eliminar
       totalMonto += data.monto; // Sumar el monto de cada documento
-
-       //Esta linea muestra el total de gastos registrados
-    totalMontoContenedor.innerHTML = `<p> ₡${totalMonto.toLocaleString("es-CR",{ minimumFractionDigits: 0 } )}</p>`;
-
 
       // Manejo de la fecha de creación
       let fechaCreacion = "";
@@ -357,7 +370,11 @@ async function mostrarRegistros(mes) {
       registrosContenedor.innerHTML += gastoItem;
     });
 
-   
+    // Mostrar el total de gastos y el presupuesto
+    totalMontoContenedor.innerHTML = `<p>Total: ₡${totalMonto.toLocaleString("es-CR", { minimumFractionDigits: 2 })}</p>`;
+    const diferencia = presupuesto - totalMonto;
+    presupuestoContenedor.innerHTML = `<p>Presupuesto: ₡${presupuesto.toLocaleString("es-CR", { minimumFractionDigits: 2 })}</p>
+                                        <p>Diferencia: ₡${diferencia.toLocaleString("es-CR", { minimumFractionDigits: 2 })}</p>`;
 
     // Añadir eventos para los botones de eliminar
     document.querySelectorAll('.eliminar-btn').forEach(button => {
@@ -385,15 +402,26 @@ async function mostrarRegistros(mes) {
     });
 
   } catch (error) {
-    console.error("Error al mostrar los registros:", error);
-    M.toast({ html: `Error: ${error.message}` });
+    console.error("Error al obtener datos del mes:", error);
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  mostrarRegistros(); // Mostrar registros del mes actual si no se pasa un mes específico
+// Función para inicializar y verificar la autenticación del usuario
+function inicializar() {
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      // El usuario está autenticado, ahora podemos llamar a mostrarRegistros
+      const mesSeleccionado = obtenerMesActual(); // Ajusta esto si tienes una forma específica de obtener el mes
+      mostrarRegistros(mesSeleccionado);
+    } else {
+      console.error("No hay usuario autenticado.");
+    }
+  });
+}
 
- 
+// Asegúrate de que la función se llame después de que el DOM esté listo
+document.addEventListener('DOMContentLoaded', inicializar);
+
   // Cargar el mes seleccionado al cargar el modal
   loadSelectedMonth();
 
@@ -492,7 +520,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     console.error("Formulario agregarDatosForm no encontrado.");
   }
-});
+;
 
 import { myFontBase64 } from './fonts.js'; // Asegúrate de que la ruta sea correcta
 
