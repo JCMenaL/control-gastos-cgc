@@ -37,6 +37,64 @@ const storage = getStorage(app);
 
 
 
+// Inicialización de Materialize
+document.addEventListener('DOMContentLoaded', function() {
+  const elems = document.querySelectorAll('select');
+  M.FormSelect.init(elems);
+  const tabs = document.querySelectorAll('.tabs');
+  M.Tabs.init(tabs);
+
+  const userEmailElement = document.getElementById("userEmail");
+  const userEmail = localStorage.getItem("userEmail");
+
+  if (userEmailElement && userEmail) {
+    userEmailElement.textContent = userEmail;
+  }
+});
+
+
+
+  //maneja todo lo relaconado al menu hamburguesa
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Inicializa el menú hamburguesa de Materialize
+  const elems = document.querySelectorAll('.sidenav');
+  M.Sidenav.init(elems);
+
+  // Manejo del inicio de sesión
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        localStorage.setItem("userEmail", user.email);
+        console.log("Usuario logueado:", user);
+        M.toast({ html: "Login correcto" });
+        window.location.href = "registro.html";
+      } catch (error) {
+        console.error("Error en el login:", error);
+        M.toast({ html: `Error: ${error.message}` });
+      }
+    });
+  } else {
+    console.error("Formulario de login no encontrado en el DOM.");
+  }
+
+  // Observador de autenticación de Firebase
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      console.log("Usuario autenticado:", user);
+      await cargarDatosMenuHamburguesa();
+    } else {
+      console.log("No hay usuario autenticado");
+    }
+  });
+});
+
 async function cargarDatosMenuHamburguesa() {
   const user = auth.currentUser;
   if (!user) {
@@ -88,9 +146,6 @@ async function cargarDatosMenuHamburguesa() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await cargarDatosMenuHamburguesa();
-});
 
 
 // Función para crear una colección del usuario
@@ -187,22 +242,7 @@ function obtenerMesActual() {
   return meses[fechaActual.getMonth()];
 }
 
-// Inicialización de Materialize
-document.addEventListener('DOMContentLoaded', function() {
-  const elems = document.querySelectorAll('select');
-  M.FormSelect.init(elems);
-  M.Sidenav.init(document.querySelectorAll('.sidenav'));
 
-  const tabs = document.querySelectorAll('.tabs');
-  M.Tabs.init(tabs);
-
-  const userEmailElement = document.getElementById("userEmail");
-  const userEmail = localStorage.getItem("userEmail");
-
-  if (userEmailElement && userEmail) {
-    userEmailElement.textContent = userEmail;
-  }
-});
 // Función para mostrar los registros del mes seleccionado
 async function mostrarRegistros(mes) {
   const user = auth.currentUser;
@@ -317,29 +357,7 @@ async function mostrarRegistros(mes) {
 document.addEventListener("DOMContentLoaded", () => {
   mostrarRegistros(); // Mostrar registros del mes actual si no se pasa un mes específico
 
-  // Manejo del inicio de sesión
-  const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        localStorage.setItem("userEmail", user.email);
-        console.log("Usuario logueado:", user);
-        M.toast({ html: "Login correcto" });
-        window.location.href = "registro.html";
-      } catch (error) {
-        console.error("Error en el login:", error);
-        M.toast({ html: `Error: ${error.message}` });
-      }
-    });
-  } else {
-    console.error("Formulario de login no encontrado en el DOM.");
-  }
-
+ 
   // Cargar el mes seleccionado al cargar el modal
   loadSelectedMonth();
 
