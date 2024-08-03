@@ -33,7 +33,11 @@ tr:nth-child(even) {
     margin-top: 5px;
 }
 
-
+/* Estilo personalizado para el nav */
+nav {
+    border-radius: 0px 0px 6px 6px; 
+    overflow: hidden; 
+}
 
 .button-custom {
   width: 100%;
@@ -114,4 +118,32 @@ tr:nth-child(even) {
   }
 
 
+  .sidenav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #eeeded;
+    color: #fff;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    padding-top: 60px;
+    overflow-y: auto;
+  }
   
+  .sidenav.open {
+    transform: translateX(0);
+  }
+  
+  .sidenav a {
+    padding: 16px;
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    transition: background-color 0.3s;
+  }
+  
+  .sidenav a:hover {
+    background-color: #575757;
+  }
