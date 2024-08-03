@@ -324,6 +324,10 @@ async function mostrarRegistros(mes) {
       const docId = doc.id; // ID del documento para eliminar
       totalMonto += data.monto; // Sumar el monto de cada documento
 
+       //Esta linea muestra el total de gastos registrados
+    totalMontoContenedor.innerHTML = `<p> ₡${totalMonto.toLocaleString("es-CR",{ minimumFractionDigits: 0 } )}</p>`;
+
+
       // Manejo de la fecha de creación
       let fechaCreacion = "";
       if (data.fechaCreacion && data.fechaCreacion.toDate) {
@@ -353,11 +357,7 @@ async function mostrarRegistros(mes) {
       registrosContenedor.innerHTML += gastoItem;
     });
 
-    //Esta linea muestra el total de gastos registrados
-    totalMontoContenedor.innerHTML = `<p> ₡${totalMonto.toLocaleString(
-      "es-CR",
-      { minimumFractionDigits: 0 }
-    )}</p>`;
+   
 
     // Añadir eventos para los botones de eliminar
     document.querySelectorAll('.eliminar-btn').forEach(button => {
