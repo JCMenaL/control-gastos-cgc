@@ -117,33 +117,37 @@ nav {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más pronunciada */
   }
 
+  .margin-hamburguer {
+    margin: 20px;
+  }
 
-  .sidenav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 250px;
-    background-color: #eeeded;
-    color: #fff;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    padding-top: 60px;
-    overflow-y: auto;
+  .flex-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre el input y el botón */
   }
   
-  .sidenav.open {
-    transform: translateX(0);
+  .input-field {
+    flex: 1; /* Hace que el input ocupe todo el espacio disponible */
   }
   
-  .sidenav a {
+  .btn-right {
+    margin-left: 10px; /* Ajusta el margen izquierdo del botón si es necesario */
+  }
+
+  .sidenav-header {
     padding: 16px;
-    text-decoration: none;
-    color: #fff;
-    display: block;
-    transition: background-color 0.3s;
   }
   
-  .sidenav a:hover {
-    background-color: #575757;
+  .sidenav-header h5 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
   }
+  
+  .divider {
+    height: 1px;
+    background-color: #e0e0e0;
+    margin: 8px 0;
+  }
+  

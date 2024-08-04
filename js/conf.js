@@ -57,79 +57,93 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-//maneja todo lo relaconado al menu hamburguesa
+  document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('foto');
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      // Tu lógica de subida de archivos aquí
+    });
+  });
+  
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Inicializa el menú hamburguesa de Materialize
-  const elems = document.querySelectorAll(".sidenav");
-  M.Sidenav.init(elems);
 
-  // Manejo del inicio de sesión
-  const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-      try {
-        const userCredential = await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-        const user = userCredential.user;
-        localStorage.setItem("userEmail", user.email);
-        console.log("Usuario logueado:", user);
-        M.toast({ html: "Login correcto" });
-        window.location.href = "registro.html";
-      } catch (error) {
-        console.error("Error en el login:", error);
-        M.toast({ html: `Error: ${error.message}` });
+  document.addEventListener('DOMContentLoaded', () => {
+    // Inicializa los modales
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems, {});
+  });
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // Inicializa el menú hamburguesa de Materialize
+    const elems = document.querySelectorAll(".sidenav");
+    M.Sidenav.init(elems);
+  
+    // Manejo del inicio de sesión
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+        try {
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+          localStorage.setItem("userEmail", user.email);
+          console.log("Usuario logueado:", user);
+          M.toast({ html: "Login correcto" });
+          window.location.href = "registro.html";
+        } catch (error) {
+          console.error("Error en el login:", error);
+          M.toast({ html: `Error: ${error.message}` });
+        }
+      });
+    } else {
+      console.error("Formulario de login no encontrado en el DOM.");
+    }
+  
+    // Carga datos en el sidenav menu hamburguesa  Presupuestos
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        console.log("Usuario autenticado:", user);
+        await cargarDatosMenuHamburguesa();
+      } else {
+        console.log("No hay usuario autenticado");
       }
     });
-  } else {
-    console.error("Formulario de login no encontrado en el DOM.");
-  }
-
-  // Observador de autenticación de Firebase
-  auth.onAuthStateChanged(async (user) => {
-    if (user) {
-      console.log("Usuario autenticado:", user);
-      await cargarDatosMenuHamburguesa();
-    } else {
-      console.log("No hay usuario autenticado");
-    }
   });
-});
-
-async function cargarDatosMenuHamburguesa() {
-  const user = auth.currentUser;
-  if (!user) {
-    console.log("No hay usuario autenticado");
-    return;
-  }
-
-  const months = [
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre",
-  ];
-
-  try {
-    const userRef = doc(db, "usuarios", user.uid);
-
-    // Limpia el contenido del menú
+  
+  async function cargarDatosMenuHamburguesa() {
+    const user = auth.currentUser;
+    if (!user) {
+      console.log("No hay usuario autenticado");
+      return;
+    }
+  
+    const months = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto",
+      "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+  
+    try {
+      const userRef = doc(db, "usuarios", user.uid);
+  
+       // Limpia el contenido del menú
     const menu = document.getElementById("menuHamburguesa");
     menu.innerHTML = "";
+
+    // Agrega el título del sidenav
+    const titleItem = document.createElement("li");
+    titleItem.classList.add("sidenav-header");
+    const title = document.createElement("h5");
+    title.textContent = "Configuración de Presupuestos";
+    titleItem.appendChild(title);
+    menu.appendChild(titleItem);
+
+    // Agrega un separador debajo del título
+    const divider = document.createElement("div");
+    divider.classList.add("divider");
+    menu.appendChild(divider);
 
     for (const month of months) {
       const monthRef = doc(userRef, "meses", month);
@@ -142,23 +156,36 @@ async function cargarDatosMenuHamburguesa() {
         const presupuesto = data.presupuesto || 0;
 
         const menuItem = document.createElement("li");
+        menuItem.classList.add("sidenav-item", "margin-hamburguer");
 
         const label = document.createElement("label");
         label.textContent = month;
+        label.setAttribute("for", `input-${month}`);
+
+        const flexDiv = document.createElement("div");
+        flexDiv.classList.add("flex-container");
 
         const input = document.createElement("input");
         input.type = "number";
         input.value = presupuesto;
         input.id = `input-${month}`;
+        input.classList.add("validate", "input-field");
 
         const saveButton = document.createElement("button");
         saveButton.textContent = "Guardar";
-        saveButton.classList.add("btn-small");
+        saveButton.classList.add("btn", "waves-effect", "waves-light", "btn-right");
         saveButton.onclick = () => guardarPresupuesto(month, input.value);
 
-        menuItem.appendChild(label);
-        menuItem.appendChild(input);
-        menuItem.appendChild(saveButton);
+        flexDiv.appendChild(input);
+        flexDiv.appendChild(saveButton);
+
+        const div = document.createElement("div");
+        div.classList.add("input-field", "col", "s12");
+
+        div.appendChild(label);
+        div.appendChild(flexDiv);
+
+        menuItem.appendChild(div);
         menu.appendChild(menuItem);
       } else {
         console.error(`No se encontró el documento para el mes ${month}`);
@@ -168,33 +195,32 @@ async function cargarDatosMenuHamburguesa() {
     console.error("Error al obtener datos del mes:", error);
   }
 }
-
-async function guardarPresupuesto(month, newPresupuesto) {
-  const user = auth.currentUser;
-  if (!user) {
-    console.log("No hay usuario autenticado");
-    return;
+  
+  async function guardarPresupuesto(month, newPresupuesto) {
+    const user = auth.currentUser;
+    if (!user) {
+      console.log("No hay usuario autenticado");
+      return;
+    }
+  
+    try {
+      const userRef = doc(db, "usuarios", user.uid);
+      const monthRef = doc(userRef, "meses", month);
+  
+      await setDoc(
+        monthRef,
+        { presupuesto: parseFloat(newPresupuesto) },
+        { merge: true }
+      );
+      M.toast({
+        html: `Presupuesto para ${month} actualizado a ₡${parseFloat(newPresupuesto).toLocaleString("es-CR", { minimumFractionDigits: 0 })}`,
+      });
+    } catch (error) {
+      console.error("Error al guardar el presupuesto:", error);
+      M.toast({ html: `Error: ${error.message}` });
+    }
   }
-
-  try {
-    const userRef = doc(db, "usuarios", user.uid);
-    const monthRef = doc(userRef, "meses", month);
-
-    await setDoc(
-      monthRef,
-      { presupuesto: parseFloat(newPresupuesto) },
-      { merge: true }
-    );
-    M.toast({
-      html: `Presupuesto para ${month} actualizado a ₡${parseFloat(
-        newPresupuesto
-      ).toLocaleString("es-CR", { minimumFractionDigits: 0 })}`,
-    });
-  } catch (error) {
-    console.error("Error al guardar el presupuesto:", error);
-    M.toast({ html: `Error: ${error.message}` });
-  }
-}
+  
 
 // Función para crear una colección del usuario
 async function createUserCollection(user) {
