@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registro Gastos</title>
     <!-- Compiled and minified CSS -->
-   
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
@@ -19,32 +19,51 @@
   </head>
 
   <body>
-  <!-- Navbar -->
-  <div class="row">
-    <nav class="nav-extended light-blue darken-3">
-      <div class="nav-wrapper">
-        <a href="#" class="brand-logo">
-          <h5>Registro Gastos</h5>
-        </a>
-        <a href="#" class="sidenav-trigger" data-target="menuHamburguesa">
-          <i class="material-icons">menu</i>
-        </a>
-      
-      </div>
-    </nav>
+    <!-- Navbar -->
+    <div class="row">
+      <nav class="nav-extended light-blue darken-3">
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo">
+            <h5>Registro Gastos</h5>
+          </a>
+          <a href="#" data-target="mobile-demo" class="sidenav-trigger"
+            ><i class="material-icons">menu</i></a
+          >
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="sass.html">Sass</a></li>
+            <li><a href="badges.html">Components</a></li>
+            <li><a href="collapsible.html">JavaScript</a></li>
+          </ul>
+        </div>
+        <div class="nav-content">
+          <ul class="tabs tabs-transparent">
+            <li class="tab"><a class="active" href="#ingresoDatos">Registro gastos</a></li>
+            <li class="tab"><a href="#menuHamburguesa">Presupuesto</a></li>
+           <!-- <li class="tab disabled"><a href="#test3">Disabled Tab</a></li>
+            <li class="tab"><a href="#test4">Test 4</a></li>-->
+          </ul>
+        </div>
+      </nav>
 
-    <ul id="menuHamburguesa" class="sidenav">
-      <!-- Los elementos del menú se añadirán aquí dinámicamente -->
-    </ul>
-  </div>
+      <!-- <ul class="sidenav" id="mobile-demo">
+        <li><a href="sass.html">Sass</a></li>
+        <li><a href="badges.html">Components</a></li>
+        <li><a href="collapsible.html">JavaScript</a></li>
+      </ul>-->
 
+      <div id="menuHamburguesa" class="col s12"></div>
+      <div id="ingresoDatos" class="col s12"></div>
+     <!-- <div id="test3" class="col s12">Test 3</div>
+      <div id="test4" class="col s12">Test 4</div>-->
+    </div>
 
     <!-- Mostrar el correo aquí -->
-    <div class="col s12 center">
-      <h6>Bienvenido: <span id="userEmail"></span></h6>
-    </div>
+    
     <!-- Modal para Agregar Datos -->
-    <div class="container">
+    <div class="container" id="ingresoDatos">
+      <div class="col s12 center">
+        <h6>Bienvenido: <span id="userEmail"></span></h6>
+      </div>
       <div class="row">
         <div class="col s12">
           <form id="agregarDatosForm">
@@ -127,31 +146,29 @@
           </form>
         </div>
       </div>
-    </div>
 
-    <!-- Contenedor para mostrar registros -->
-    <div class="container">
-      <div id="registrosContenedor" class="container">
-        <div class="card-panel blue lighten-5" id="totalGastos">
-          <h5 class="black-text">Total de Gastos</h5>
-          <h4 class="red-text text-darken-3" id="totalMonto"></h4>
-          <h5><div  class="teal-text text-darken-3" id="presupuestoMonto"></div> </h5> 
-        </div>
+      <!-- Contenedor para mostrar registros -->
+      <div class="container">
+        <div id="registrosContenedor" class="container">
+          <div class="card-panel blue lighten-5" id="totalGastos">
+            <h5 class="black-text">Total de Gastos</h5>
+            <h4 class="red-text text-darken-3" id="totalMonto"></h4>
+            <h5>
+              <div class="teal-text text-darken-3" id="presupuestoMonto"></div>
+            </h5>
+          </div>
 
-        <div class="card-panel white" id="listaResumen">
-          <ul id="registrosLista"></ul>
-          
+          <div class="card-panel white" id="listaResumen">
+            <ul id="registrosLista"></ul>
+          </div>
         </div>
       </div>
     </div>
-
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/inicio.js"></script>
     <script type="module" src="js/conf.js"></script>
-
-    
   </body>
 </html>
