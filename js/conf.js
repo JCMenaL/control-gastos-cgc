@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener('DOMContentLoaded', () => {
     // Inicializa los modales
     var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems, {});
+    var instances = M.Modal.init(elems);
   });
 
 
@@ -78,6 +78,23 @@ document.addEventListener("DOMContentLoaded", function () {
     // Inicializa el menú hamburguesa de Materialize
     const elems = document.querySelectorAll(".sidenav");
     M.Sidenav.init(elems);
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.tabs');
+      var instances = M.Tabs.init(elems);
+    });
+
+
+
+
+
+
+
+
+
+
+
   
     // Manejo del inicio de sesión
     const loginForm = document.getElementById("loginForm");

@@ -26,20 +26,24 @@
           <a href="#" class="brand-logo">
             <h5>Registro Gastos</h5>
           </a>
-          <a href="#" data-target="mobile-demo" class="sidenav-trigger"
+          <!-- <a href="#" data-target="mobile-demo" class="sidenav-trigger"
             ><i class="material-icons">menu</i></a
           >
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="sass.html">Sass</a></li>
             <li><a href="badges.html">Components</a></li>
             <li><a href="collapsible.html">JavaScript</a></li>
-          </ul>
+          </ul>-->
         </div>
         <div class="nav-content">
           <ul class="tabs tabs-transparent">
-            <li class="tab"><a class="active" href="#ingresoDatos">Registro gastos</a></li>
-            <li class="tab"><a href="#menuHamburguesa">Presupuesto</a></li>
-           <!-- <li class="tab disabled"><a href="#test3">Disabled Tab</a></li>
+            <li class="tab">
+              <a class="active" href="#ingresoDatos">Registro gastos</a>
+            </li>
+            <li class="tab">
+              <a  href="#modal1"> Presupuesto</a>
+            </li>
+            <!-- <li class="tab disabled"><a href="#test3">Disabled Tab</a></li>
             <li class="tab"><a href="#test4">Test 4</a></li>-->
           </ul>
         </div>
@@ -51,14 +55,23 @@
         <li><a href="collapsible.html">JavaScript</a></li>
       </ul>-->
 
-      <div id="menuHamburguesa" class="col s12"></div>
       <div id="ingresoDatos" class="col s12"></div>
-     <!-- <div id="test3" class="col s12">Test 3</div>
+      <!-- <div id="test3" class="col s12">Test 3</div>
       <div id="test4" class="col s12">Test 4</div>-->
+<!-- Modal Structure -->
+ 
+<div id="modal1" class="modal">
+    <ul><div id="menuHamburguesa" class="col s12"></div></ul>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+  </div>
+</div>
+       
     </div>
+<!--Modasl para presupuesto-->
 
-    <!-- Mostrar el correo aquí -->
-    
+
+
     <!-- Modal para Agregar Datos -->
     <div class="container" id="ingresoDatos">
       <div class="col s12 center">
@@ -87,7 +100,9 @@
             </div>
             <div class="input-field col s12">
               <select id="tipoGasto" name="tipoGasto" required>
-                <option value="" disabled selected>Selecciona el tipo de gasto</option>
+                <option value="" disabled selected>
+                  Selecciona el tipo de gasto
+                </option>
                 <option value="Combustibre">Combustible</option>
                 <option value="Alimentacion">Alimentacion</option>
                 <option value="Hospedaje">Hospedaje</option>

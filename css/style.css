@@ -151,3 +151,8 @@ nav {
     margin: 8px 0;
   }
   
+
+
+  #modal1 {
+    z-index: 100;
+  }
