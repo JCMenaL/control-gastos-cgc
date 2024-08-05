@@ -70,9 +70,13 @@ document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener('DOMContentLoaded', () => {
     // Inicializa los modales
     var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems);
+    var instances = M.Modal.init(elems, );
   });
 
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.tabs');
+    var instances = M.Tabs.init(elems);
+  });
 
   document.addEventListener("DOMContentLoaded", function () {
     // Inicializa el menú hamburguesa de Materialize
@@ -80,10 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
     M.Sidenav.init(elems);
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.tabs');
-      var instances = M.Tabs.init(elems);
-    });
+    
 
 
 
@@ -93,8 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-
+    
   
     // Manejo del inicio de sesión
     const loginForm = document.getElementById("loginForm");
@@ -119,18 +119,18 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Formulario de login no encontrado en el DOM.");
     }
   
-    // Carga datos en el sidenav menu hamburguesa  Presupuestos
+    // Carga datos en el  Presupuestos
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         console.log("Usuario autenticado:", user);
-        await cargarDatosMenuHamburguesa();
+        await cargarDatosmenuPresupuesto();
       } else {
         console.log("No hay usuario autenticado");
       }
     });
   });
   
-  async function cargarDatosMenuHamburguesa() {
+  async function cargarDatosmenuPresupuesto() {
     const user = auth.currentUser;
     if (!user) {
       console.log("No hay usuario autenticado");
@@ -146,21 +146,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const userRef = doc(db, "usuarios", user.uid);
   
        // Limpia el contenido del menú
-    const menu = document.getElementById("menuHamburguesa");
+    const menu = document.getElementById("menuPresupuesto");
     menu.innerHTML = "";
 
-    // Agrega el título del sidenav
-    const titleItem = document.createElement("li");
-    titleItem.classList.add("sidenav-header");
-    const title = document.createElement("h5");
-    title.textContent = "Configuración de Presupuestos";
-    titleItem.appendChild(title);
-    menu.appendChild(titleItem);
+  
 
-    // Agrega un separador debajo del título
-    const divider = document.createElement("div");
-    divider.classList.add("divider");
-    menu.appendChild(divider);
 
     for (const month of months) {
       const monthRef = doc(userRef, "meses", month);
@@ -173,11 +163,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const presupuesto = data.presupuesto || 0;
 
         const menuItem = document.createElement("li");
-        menuItem.classList.add("sidenav-item", "margin-hamburguer");
+        menuItem.classList.add("sidenav-item");
 
         const label = document.createElement("label");
         label.textContent = month;
-        label.setAttribute("for", `input-${month}`);
+        label.setAttribute("for", `input${month}`);
 
         const flexDiv = document.createElement("div");
         flexDiv.classList.add("flex-container");
@@ -185,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const input = document.createElement("input");
         input.type = "number";
         input.value = presupuesto;
-        input.id = `input-${month}`;
+        input.id = `input${month}`;
         input.classList.add("validate", "input-field");
 
         const saveButton = document.createElement("button");
@@ -429,16 +419,16 @@ async function mostrarRegistros(mes) {
     // Mostrar el total de gastos y el presupuesto
     totalMontoContenedor.innerHTML = `<p>Total: ₡${totalMonto.toLocaleString(
       "es-CR",
-      { minimumFractionDigits: 2 }
+      { minimumFractionDigits: 0 }
     )}</p>`;
     const diferencia = presupuesto - totalMonto;
     presupuestoContenedor.innerHTML = `<p>Presupuesto: ₡${presupuesto.toLocaleString(
       "es-CR",
-      { minimumFractionDigits: 2 }
+      { minimumFractionDigits: 0 }
     )}</p>
                                         <p>Diferencia: ₡${diferencia.toLocaleString(
                                           "es-CR",
-                                          { minimumFractionDigits: 2 }
+                                          { minimumFractionDigits: 0 }
                                         )}</p>`;
 
     // Añadir eventos para los botones de eliminar
