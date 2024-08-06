@@ -79,6 +79,10 @@
         <div class="col s12">
           <form id="agregarDatosForm">
             <div class="input-field col s12">
+              <label for="year">Año</label>
+              <input type="text" id="year" value="" disabled>
+            </div>
+            <div class="input-field col s12">
               <select id="mesSelect" required>
                 <option value="" disabled selected>Selecciona un mes</option>
                 <option value="Enero">Enero</option>
@@ -160,7 +164,7 @@
       </div>
 
       <!-- Contenedor para mostrar registros -->
-      <div class="container">
+      <div >
         <div id="registrosContenedor" class="container">
           <div class="card-panel blue lighten-5" id="totalGastos">
             <h5 class="black-text">Total de Gastos</h5>

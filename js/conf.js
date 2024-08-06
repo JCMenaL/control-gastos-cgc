@@ -15,7 +15,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 import {
   getStorage,
@@ -323,6 +323,7 @@ function obtenerMesActual() {
   return meses[fechaActual.getMonth()];
 }
 
+
 // Función para mostrar los registros del mes seleccionado
 async function mostrarRegistros(mes) {
   const user = auth.currentUser;
@@ -490,6 +491,12 @@ loadSelectedMonth();
 saveSelectedMonth();
 
 let isSubmitting = false; // Variable global para manejar el estado de envío
+
+
+
+
+
+
 
 async function agregarGastoConFoto(event) {
   event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
