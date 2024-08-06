@@ -156,8 +156,17 @@ nav {
   #modal1 {
     z-index: 100;
   }
-
+  
+  
   #registrosContenedor {
-    margin-left: -18px;
-    width: 380px;
+    width: 98vw;
+    max-width: 117%;
+    margin: -30px ;
+    box-sizing: border-box;
   }
+  
+  .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
