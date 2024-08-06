@@ -653,7 +653,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const mes = document.getElementById("mesSelect").value;
+    const mes = document.getElementById("mes").value;
     if (!mes) {
       M.toast({ html: "Selecciona un mes" });
       return;
