@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
  });
 
   document.addEventListener('DOMContentLoaded', () => {
-    const fileInput = document.getElementById('foto');
+    const fileInput = document.getElementById('fotoURL');
     fileInput.addEventListener('change', (event) => {
       const file = event.target.files[0];
       // Tu lógica de subida de archivos aquí
@@ -492,19 +492,32 @@ let isSubmitting = false; // Variable global para manejar el estado de envío
 
 
 
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("agregarDatosForm");
+
+  if (form) {
+    form.addEventListener("submit", agregarGastoConFoto);
+  } else {
+    console.error("Formulario no encontrado.");
+  }
+
+  // Establecer el valor del campo año al cargar la página
+  const yearElement = document.getElementById("year");
+  if (yearElement) {
+    yearElement.value = new Date().getFullYear();
+  } else {
+    console.error("Campo 'year' no encontrado.");
+  }
+});
+
 async function agregarGastoConFoto(event) {
   event.preventDefault();
 
-  if (isSubmitting) {
-    return;
-  }
-
-  isSubmitting = true;
+  console.log("Formulario enviado");
 
   const form = document.getElementById("agregarDatosForm");
   if (!form) {
     console.error("Formulario no encontrado.");
-    isSubmitting = false;
     return;
   }
 
@@ -514,7 +527,6 @@ async function agregarGastoConFoto(event) {
     submitButton.textContent = "Enviando...";
   } else {
     console.error("Botón de envío no encontrado.");
-    isSubmitting = false;
     return;
   }
 
@@ -525,15 +537,15 @@ async function agregarGastoConFoto(event) {
   const montoElement = document.getElementById("monto");
   const fotoURLElement = document.getElementById("fotoURL");
 
+  console.log("year:", yearElement ? yearElement.value : "null");
+  console.log("mes:", mesElement ? mesElement.value : "null");
+  console.log("tipoGasto:", tipoGastoElement ? tipoGastoElement.value : "null");
+  console.log("numeroFactura:", numeroFacturaElement ? numeroFacturaElement.value : "null");
+  console.log("monto:", montoElement ? montoElement.value : "null");
+  console.log("fotoURL:", fotoURLElement ? fotoURLElement.value : "null");
+
   if (!yearElement || !mesElement || !tipoGastoElement || !numeroFacturaElement || !montoElement || !fotoURLElement) {
     console.error("Uno o más elementos del formulario no se encontraron.");
-    console.error("year:", yearElement);
-    console.error("mes:", mesElement);
-    console.error("tipoGasto:", tipoGastoElement);
-    console.error("numeroFactura:", numeroFacturaElement);
-    console.error("monto:", montoElement);
-    console.error("fotoURL:", fotoURLElement);
-    isSubmitting = false;
     if (submitButton) {
       submitButton.disabled = false;
       submitButton.textContent = "Agregar Gasto";
@@ -562,7 +574,10 @@ async function agregarGastoConFoto(event) {
 
       console.log("Datos y URL de la imagen guardados en Firestore");
       M.toast({ html: "Gasto agregado correctamente" });
+
       form.reset();
+      // Establecer el valor del campo año nuevamente después de resetear el formulario
+      yearElement.value = new Date().getFullYear();
     } else {
       console.error("No hay usuario autenticado.");
     }
@@ -570,13 +585,13 @@ async function agregarGastoConFoto(event) {
     console.error("Error al agregar gasto:", error);
     M.toast({ html: `Error: ${error.message}` });
   } finally {
-    isSubmitting = false;
     if (submitButton) {
       submitButton.disabled = false;
       submitButton.textContent = "Agregar Gasto";
     }
   }
 }
+
 
 
 // Asignar el manejador de eventos al formulario
