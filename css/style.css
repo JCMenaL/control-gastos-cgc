@@ -175,3 +175,10 @@ nav {
     margin: 20px 0px 30px -30px; /* Ajusta el margen entre los paneles de tarjeta */
   }
 
+
+     /* CSS personalizado para ajustar la posición del label */
+     .input-field label.active {
+      transform: translateY(-20px);
+      font-size: 0.8rem;
+      color: #9e9e9e;
+    }

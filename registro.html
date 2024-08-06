@@ -79,8 +79,9 @@
         <div class="col s12">
           <form id="agregarDatosForm">
             <div class="input-field col s12">
-              <label for="year">Año</label>
+              <div for="year" class="text">Año</div>
               <input type="text" id="year" value="" disabled>
+             
             </div>
             <div class="input-field col s12">
               <select id="mesSelect" required>
@@ -166,13 +167,13 @@
     <!-- Contenedor para mostrar registros -->
     <div class="container">
       <div id="registrosContenedor" class="container">
-        <div class="card-panel blue lighten-5" id="totalGastos">
-          <h5 class="black-text">Total de Gastos</h5>
-          <h4 class="red-text text-darken-3" id="totalMonto"></h4>
-          <h5>
-            <div class="teal-text text-darken-3" id="presupuestoMonto"></div>
-          </h5>
-        </div>
+       <div class="card-panel blue lighten-5" id="totalGastos">
+  <h5 class="black-text">Total de Gastos</h5>
+  <h4 class="red-text text-darken-3" id="totalMonto"></h4>
+  <h5>
+    <div class="teal-text text-darken-3" id="presupuestoMonto"></div>
+  </h5>
+</div>
     
         <div class="card-panel white" id="listaResumen">
           <ul id="registrosLista"></ul>

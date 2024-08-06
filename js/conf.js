@@ -55,7 +55,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (userEmailElement && userEmail) {
     userEmailElement.textContent = userEmail;
   }
-});
+   // Establecer el año actual en el campo de entrada deshabilitado
+   const currentYear = new Date().getFullYear();
+   document.getElementById("year").value = currentYear;
+ });
 
   document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('foto');
@@ -73,10 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var instances = M.Modal.init(elems, );
   });
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.tabs');
-    var instances = M.Tabs.init(elems);
-  });
+
 
   document.addEventListener("DOMContentLoaded", function () {
     // Inicializa el menú hamburguesa de Materialize
@@ -84,13 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
     M.Sidenav.init(elems);
 
 
-    
-
-
-
-
-
-
+      
 
 
 
@@ -165,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const menuItem = document.createElement("li");
         menuItem.classList.add("sidenav-item");
 
-        const label = document.createElement("label");
+        const label = document.createElement("div");
         label.textContent = month;
         label.setAttribute("for", `input${month}`);
 
@@ -175,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const input = document.createElement("input");
         input.type = "number";
         input.value = presupuesto;
-        input.id = `input${month}`;
+        input.id = `input ${month}`;
         input.classList.add("validate", "input-field");
 
         const saveButton = document.createElement("button");
