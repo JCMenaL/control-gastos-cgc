@@ -159,14 +159,18 @@ nav {
   
   
   #registrosContenedor {
-    width: 98vw;
-    max-width: 117%;
-    margin: -30px ;
-    box-sizing: border-box;
+    width: 98vw; /* Asegura que el contenedor abarque el 98% del ancho de la ventana gráfica */
+    max-width: 109%;
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    box-sizing: border-box; /* Incluye el relleno y el borde en el cálculo del ancho total */
   }
   
   .container {
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 0; /* Elimina el relleno a la izquierda */
+    padding-right: 0; /* Elimina el relleno a la derecha */
   }
   
+  .card-panel {
+    padding: 16px; /* Ajusta el relleno dentro de los paneles de tarjeta */
+    margin: 15px 0px 0px -30px; /* Ajusta el margen entre los paneles de tarjeta */
+  }
