@@ -493,87 +493,91 @@ let isSubmitting = false; // Variable global para manejar el estado de envío
 
 
 async function agregarGastoConFoto(event) {
-  event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+  event.preventDefault();
 
   if (isSubmitting) {
-    return; // Evitar múltiples envíos si ya está en proceso
-  }
-
-  isSubmitting = true; // Establecer el indicador de carga
-
-  // Obtener el formulario y verificar si existe
-  const form = document.getElementById("agregarDatosForm");
-  if (!form) {
-    console.error("Formulario no encontrado.");
-    isSubmitting = false; // Rehabilitar el indicador de carga
     return;
   }
 
-  // Deshabilitar el botón de envío para evitar múltiples envíos
+  isSubmitting = true;
+
+  const form = document.getElementById("agregarDatosForm");
+  if (!form) {
+    console.error("Formulario no encontrado.");
+    isSubmitting = false;
+    return;
+  }
+
   const submitButton = form.querySelector('button[type="submit"]');
   if (submitButton) {
     submitButton.disabled = true;
     submitButton.textContent = "Enviando...";
   } else {
     console.error("Botón de envío no encontrado.");
-    isSubmitting = false; // Rehabilitar el indicador de carga
+    isSubmitting = false;
     return;
   }
 
-  const mes = document.getElementById("mesSelect").value;
-  const tipoGasto = document.getElementById("tipoGasto").value;
-  const numeroFactura = document.getElementById("numeroFactura").value;
-  const monto = document.getElementById("monto").value;
-  const file = document.getElementById("foto").files[0];
+  const yearElement = document.getElementById("year");
+  const mesElement = document.getElementById("mes");
+  const tipoGastoElement = document.getElementById("tipoGasto");
+  const numeroFacturaElement = document.getElementById("numeroFactura");
+  const montoElement = document.getElementById("monto");
+  const fotoURLElement = document.getElementById("fotoURL");
 
-  if (!mes || !tipoGasto || !numeroFactura || !monto || !file) {
-    alert("Por favor, completa todos los campos.");
-    submitButton.disabled = false; // Habilitar el botón de envío si faltan campos
-    submitButton.textContent = "Agregar Gasto";
-    isSubmitting = false; // Rehabilitar el indicador de carga
-    return;
-  }
-
-  try {
-    // Subir la foto a Firebase Storage
-    const storageRef = ref(storage, `fotos/${file.name}`);
-    const snapshot = await uploadBytes(storageRef, file);
-    console.log("Subida completada:", snapshot);
-
-    // Obtener la URL de la foto
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    console.log("Archivo disponible en:", downloadURL);
-
-    // Obtener el usuario autenticado
-    const user = auth.currentUser;
-    if (user) {
-      // Agregar el gasto a Firestore
-      await addDoc(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`), {
-        tipoGasto: tipoGasto,
-        numeroFactura: numeroFactura,
-        monto: Number(monto),
-        foto: downloadURL,
-        fechaCreacion: Timestamp.now(),
-      });
-      console.log("Datos y URL de la imagen guardados en Firestore");
-      M.toast({ html: "Gasto agregado correctamente" });
-      // Limpiar el formulario
-      form.reset();
-    } else {
-      M.toast({ html: "No estás autenticado" });
-    }
-  } catch (error) {
-    console.error("Error al agregar el gasto:", error);
-    M.toast({ html: `Error: ${error.message}` });
-  } finally {
-    // Habilitar el botón de envío después de completar la operación
+  if (!yearElement || !mesElement || !tipoGastoElement || !numeroFacturaElement || !montoElement || !fotoURLElement) {
+    console.error("Uno o más elementos del formulario no se encontraron.");
+    console.error("year:", yearElement);
+    console.error("mes:", mesElement);
+    console.error("tipoGasto:", tipoGastoElement);
+    console.error("numeroFactura:", numeroFacturaElement);
+    console.error("monto:", montoElement);
+    console.error("fotoURL:", fotoURLElement);
+    isSubmitting = false;
     if (submitButton) {
       submitButton.disabled = false;
       submitButton.textContent = "Agregar Gasto";
     }
-    isSubmitting = false; // Rehabilitar el indicador de carga
+    return;
+  }
+
+  const year = yearElement.value;
+  const mes = mesElement.value;
+  const tipoGasto = tipoGastoElement.value;
+  const numeroFactura = numeroFacturaElement.value;
+  const monto = montoElement.value;
+  const fotoURL = fotoURLElement.value;
+
+  try {
+    const user = auth.currentUser;
+    if (user) {
+      await addDoc(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`), {
+        year: Number(year),
+        tipoGasto: tipoGasto,
+        numeroFactura: numeroFactura,
+        monto: Number(monto),
+        foto: fotoURL,
+        fechaCreacion: Timestamp.now(),
+      });
+
+      console.log("Datos y URL de la imagen guardados en Firestore");
+      M.toast({ html: "Gasto agregado correctamente" });
+      form.reset();
+    } else {
+      console.error("No hay usuario autenticado.");
+    }
+  } catch (error) {
+    console.error("Error al agregar gasto:", error);
+    M.toast({ html: `Error: ${error.message}` });
+  } finally {
+    isSubmitting = false;
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Agregar Gasto";
+    }
   }
 }
+
 
 // Asignar el manejador de eventos al formulario
 const agregarDatosForm = document.getElementById("agregarDatosForm");
