@@ -613,8 +613,6 @@ style.textContent = `
   }
 `;
 
-document.head.appendChild(style);
-
 document.addEventListener("DOMContentLoaded", () => {
   const { jsPDF } = window.jspdf;
 
@@ -629,7 +627,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Función para regenerar el token
   async function regenerarToken() {
     try {
       const user = auth.currentUser;
@@ -684,118 +681,84 @@ document.addEventListener("DOMContentLoaded", () => {
       doc.setFont("MyFont");
 
       const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
       const lineHeight = 10;
       const imageWidth = 50;
       const imageHeight = 50;
-      const maxY = 250; // Ajusta el límite de la página según sea necesario
+      const recordHeight = 80; // Altura estimada para cada registro, ajustable
 
-      // Encabezado centrado
+      // Encabezado en la primera página
       doc.setFontSize(26);
       let text = "Informe de Gastos";
       let textWidth = doc.getTextWidth(text);
       let x = (pageWidth - textWidth) / 2;
-      doc.text(text, x, 10);
+      doc.text(text, x, 20);
 
       doc.setFontSize(16);
       text = `Usuario: ${user.email}`;
       textWidth = doc.getTextWidth(text);
       x = (pageWidth - textWidth) / 2;
-      doc.text(text, x, 20);
+      doc.text(text, x, 40);
 
       text = `Realizado el día: ${new Date().toLocaleString()}`;
       textWidth = doc.getTextWidth(text);
       x = (pageWidth - textWidth) / 2;
-      doc.text(text, x, 30);
+      doc.text(text, x, 60);
 
       text = "-----------------------------";
       textWidth = doc.getTextWidth(text);
       x = (pageWidth - textWidth) / 2;
-      doc.text(text, x, 40);
+      doc.text(text, x, 80);
 
       text = `Registros de: ${mes}`;
       textWidth = doc.getTextWidth(text);
       x = (pageWidth - textWidth) / 2;
-      doc.text(text, x, 50);
+      doc.text(text, x, 100);
 
       text = "-----------------------------";
       textWidth = doc.getTextWidth(text);
       x = (pageWidth - textWidth) / 2;
-      doc.text(text, x, 60);
+      doc.text(text, x, 120);
 
-      let y = 70;
+      doc.addPage(); // Añadir nueva página para los registros
+
+      let y = 20; // Ajustar la posición inicial de los registros
+      let recordCount = 0;
 
       for (const docSnap of querySnapshot.docs) {
         const data = docSnap.data();
+        recordCount++;
 
-        // Verificar si se necesita agregar una nueva página
-        if (y + imageHeight > maxY) {
+        if (recordCount > 3) {
           doc.addPage();
-          y = 10; // Reiniciar la posición vertical para la nueva página
+          y = 20; // Reiniciar la posición vertical para la nueva página
+          recordCount = 1; // Reiniciar el contador de registros por página
         }
 
         // Añadir datos del gasto
         doc.setFontSize(16);
         doc.text(`Tipo de Gasto: ${data.tipoGasto}`, 10, y);
-        doc.text(
-          `Número de Factura: ${data.numeroFactura}`,
-          10,
-          y + lineHeight
-        );
-        doc.text(
-          `Monto: ₡${data.monto.toLocaleString("es-CR", {
-            minimumFractionDigits: 2,
-          })}`,
-          10,
-          y + 2 * lineHeight
-        );
-        doc.text(
-          `Fecha de Creación: 
-${data.fechaCreacion.toDate().toLocaleString()}`,
-          10,
-          y + 3 * lineHeight
-        );
+        doc.text(`Número de Factura: ${data.numeroFactura}`, 10, y + lineHeight);
+        doc.text(`Monto: ₡${data.monto.toLocaleString("es-CR", { minimumFractionDigits: 2 })}`, 10, y + 2 * lineHeight);
+        doc.text(`Fecha de Creación: ${data.fechaCreacion.toDate().toLocaleString()}`, 10, y + 3 * lineHeight);
 
-        // Posición para la imagen y el enlace
-        let imageX = 120; // Ajusta la posición horizontal de la imagen
-        let imageY = y;
-
-        // Añadir imagen
+        // Añadir imagen y ajustar la posición de la imagen y el texto
         if (data.foto) {
           const imageUrl = await obtenerImagenData(data.foto);
           if (imageUrl) {
-            // Verificar si se necesita agregar una nueva página
-            if (y + imageHeight > maxY) {
-              doc.addPage();
-              y = 10; // Reiniciar la posición vertical para la nueva página
-            }
-            doc.addImage(
-              imageUrl,
-              "PNG",
-              imageX,
-              imageY,
-              imageWidth,
-              imageHeight
-            ); // Ajustar posición y tamaño según sea necesario
-
-            // Añadir enlace a la imagen
-            doc.link(imageX, imageY, imageWidth, imageHeight, {
-              url: data.foto,
-            });
-            y += imageHeight + 10; // Espacio adicional después de la imagen
+            doc.addImage(imageUrl, "PNG", 120, y, imageWidth, imageHeight); // Ajustar posición y tamaño según sea necesario
+            doc.link(120, y, imageWidth, imageHeight, { url: data.foto });
           }
         } else {
-          doc.text("Foto no disponible", 10, y + 4 * lineHeight);
-          y += lineHeight + 10; // Espacio adicional si no hay foto
+          doc.text("Foto no disponible", 120, y + 4 * lineHeight);
         }
 
+        y += recordHeight;
+
         // Añadir línea divisoria entre registros
-        if (y + lineHeight < maxY) {
-          // Verificar si hay espacio suficiente para la línea
-          doc.line(10, y + lineHeight, pageWidth - 10, y + lineHeight);
-          y += lineHeight + 10; // Espacio después de la línea
-        } else {
-          doc.addPage();
-          y = 10; // Reiniciar la posición vertical para la nueva página
+        if (recordCount < 3) {
+          doc.line(10, y - 5, pageWidth - 10, y - 5);
+          y += 10;
         }
       }
 
