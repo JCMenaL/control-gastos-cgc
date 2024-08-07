@@ -535,16 +535,9 @@ async function agregarGastoConFoto(event) {
   const tipoGastoElement = document.getElementById("tipoGasto");
   const numeroFacturaElement = document.getElementById("numeroFactura");
   const montoElement = document.getElementById("monto");
-  const fotoURLElement = document.getElementById("fotoURL");
+  const fotoElement = document.getElementById("fotoURL");
 
-  console.log("year:", yearElement ? yearElement.value : "null");
-  console.log("mes:", mesElement ? mesElement.value : "null");
-  console.log("tipoGasto:", tipoGastoElement ? tipoGastoElement.value : "null");
-  console.log("numeroFactura:", numeroFacturaElement ? numeroFacturaElement.value : "null");
-  console.log("monto:", montoElement ? montoElement.value : "null");
-  console.log("fotoURL:", fotoURLElement ? fotoURLElement.value : "null");
-
-  if (!yearElement || !mesElement || !tipoGastoElement || !numeroFacturaElement || !montoElement || !fotoURLElement) {
+  if (!yearElement || !mesElement || !tipoGastoElement || !numeroFacturaElement || !montoElement || !fotoElement) {
     console.error("Uno o más elementos del formulario no se encontraron.");
     if (submitButton) {
       submitButton.disabled = false;
@@ -558,11 +551,16 @@ async function agregarGastoConFoto(event) {
   const tipoGasto = tipoGastoElement.value;
   const numeroFactura = numeroFacturaElement.value;
   const monto = montoElement.value;
-  const fotoURL = fotoURLElement.value;
+  const file = fotoElement.files[0]; // Obtén el archivo seleccionado
 
   try {
     const user = auth.currentUser;
     if (user) {
+      let fotoURL = "";
+      if (file) {
+        fotoURL = await subirImagen(file);
+      }
+
       await addDoc(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`), {
         year: Number(year),
         tipoGasto: tipoGasto,
@@ -590,6 +588,13 @@ async function agregarGastoConFoto(event) {
       submitButton.textContent = "Agregar Gasto";
     }
   }
+}
+
+async function subirImagen(file) {
+  const storageRef = ref(storage, `imagenes/${file.name}`);
+  const snapshot = await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(snapshot.ref);
+  return downloadURL;
 }
 
 
@@ -686,6 +691,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const imageWidth = 50;
       const imageHeight = 50;
       const recordHeight = 80; // Altura estimada para cada registro, ajustable
+      const marginLeft = 20;
+      const marginRight = 20;
+      const contentWidth = pageWidth - marginLeft - marginRight;
 
       // Encabezado en la primera página
       doc.setFontSize(26);
@@ -737,27 +745,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Añadir datos del gasto
         doc.setFontSize(16);
-        doc.text(`Tipo de Gasto: ${data.tipoGasto}`, 10, y);
-        doc.text(`Número de Factura: ${data.numeroFactura}`, 10, y + lineHeight);
-        doc.text(`Monto: ₡${data.monto.toLocaleString("es-CR", { minimumFractionDigits: 2 })}`, 10, y + 2 * lineHeight);
-        doc.text(`Fecha de Creación: ${data.fechaCreacion.toDate().toLocaleString()}`, 10, y + 3 * lineHeight);
+        doc.text(`Tipo de Gasto: ${data.tipoGasto}`, marginLeft, y);
+        doc.text(`Número de Factura: ${data.numeroFactura}`, marginLeft, y + lineHeight);
+        doc.text(`Monto: ₡${data.monto.toLocaleString("es-CR", { minimumFractionDigits: 2 })}`, marginLeft, y + 2 * lineHeight);
+        doc.text(`Fecha de Creación: ${data.fechaCreacion.toDate().toLocaleString()}`, marginLeft, y + 3 * lineHeight);
 
         // Añadir imagen y ajustar la posición de la imagen y el texto
         if (data.foto) {
           const imageUrl = await obtenerImagenData(data.foto);
           if (imageUrl) {
-            doc.addImage(imageUrl, "PNG", 120, y, imageWidth, imageHeight); // Ajustar posición y tamaño según sea necesario
-            doc.link(120, y, imageWidth, imageHeight, { url: data.foto });
+            doc.addImage(imageUrl, "PNG", pageWidth - imageWidth - marginRight, y, imageWidth, imageHeight); // Ajustar posición y tamaño según sea necesario
+            
+            doc.link(pageWidth - imageWidth - marginRight, y, imageWidth, imageHeight, { url: data.foto });
           }
         } else {
-          doc.text("Foto no disponible", 120, y + 4 * lineHeight);
+          doc.text("Foto no disponible", pageWidth - imageWidth - marginRight, y + 4 * lineHeight);
         }
 
         y += recordHeight;
 
         // Añadir línea divisoria entre registros
         if (recordCount < 3) {
-          doc.line(10, y - 5, pageWidth - 10, y - 5);
+          doc.line(marginLeft, y - 5, pageWidth - marginRight, y - 5);
           y += 10;
         }
       }
