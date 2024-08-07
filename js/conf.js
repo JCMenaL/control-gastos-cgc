@@ -6,6 +6,8 @@ import {
   setDoc,
   collection,
   addDoc,
+  query, 
+  where,
   getDocs,
   getDoc,
   Timestamp,
@@ -113,114 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Formulario de login no encontrado en el DOM.");
     }
   
-    // Carga datos en el  Presupuestos
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        console.log("Usuario autenticado:", user);
-        await cargarDatosmenuPresupuesto();
-      } else {
-        console.log("No hay usuario autenticado");
-      }
-    });
-  });
-  
-  async function cargarDatosmenuPresupuesto() {
-    const user = auth.currentUser;
-    if (!user) {
-      console.log("No hay usuario autenticado");
-      return;
-    }
-  
-    const months = [
-      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto",
-      "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ];
-  
-    try {
-      const userRef = doc(db, "usuarios", user.uid);
-  
-       // Limpia el contenido del menú
-    const menu = document.getElementById("menuPresupuesto");
-    menu.innerHTML = "";
-
-  
-
-
-    for (const month of months) {
-      const monthRef = doc(userRef, "meses", month);
-      const docSnap = await getDoc(monthRef);
-
-      console.log(`Datos para el mes ${month}:`, docSnap.data());
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const presupuesto = data.presupuesto || 0;
-
-        const menuItem = document.createElement("li");
-        menuItem.classList.add("sidenav-item");
-
-        const label = document.createElement("div");
-        label.textContent = month;
-        label.setAttribute("for", `input${month}`);
-
-        const flexDiv = document.createElement("div");
-        flexDiv.classList.add("flex-container");
-
-        const input = document.createElement("input");
-        input.type = "number";
-        input.value = presupuesto;
-        input.id = `input ${month}`;
-        input.classList.add("validate", "input-field");
-
-        const saveButton = document.createElement("button");
-        saveButton.textContent = "Guardar";
-        saveButton.classList.add("btn", "waves-effect", "waves-light", "btn-right");
-        saveButton.onclick = () => guardarPresupuesto(month, input.value);
-
-        flexDiv.appendChild(input);
-        flexDiv.appendChild(saveButton);
-
-        const div = document.createElement("div");
-        div.classList.add("input-field", "col", "s12");
-
-        div.appendChild(label);
-        div.appendChild(flexDiv);
-
-        menuItem.appendChild(div);
-        menu.appendChild(menuItem);
-      } else {
-        console.error(`No se encontró el documento para el mes ${month}`);
-      }
-    }
-  } catch (error) {
-    console.error("Error al obtener datos del mes:", error);
-  }
-}
-  
-  async function guardarPresupuesto(month, newPresupuesto) {
-    const user = auth.currentUser;
-    if (!user) {
-      console.log("No hay usuario autenticado");
-      return;
-    }
-  
-    try {
-      const userRef = doc(db, "usuarios", user.uid);
-      const monthRef = doc(userRef, "meses", month);
-  
-      await setDoc(
-        monthRef,
-        { presupuesto: parseFloat(newPresupuesto) },
-        { merge: true }
-      );
-      M.toast({
-        html: `Presupuesto para ${month} actualizado a ₡${parseFloat(newPresupuesto).toLocaleString("es-CR", { minimumFractionDigits: 0 })}`,
-      });
-    } catch (error) {
-      console.error("Error al guardar el presupuesto:", error);
-      M.toast({ html: `Error: ${error.message}` });
-    }
-  }
+  })
   
 
 // Función para crear una colección del usuario
@@ -273,6 +168,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+
+
 // Función para cargar el mes seleccionado del localStorage
 function loadSelectedMonth() {
   const selectedMonth = localStorage.getItem("Date");
@@ -411,52 +309,7 @@ async function mostrarRegistros(mes) {
       registrosContenedor.innerHTML += gastoItem;
     });
 
-    // Mostrar el total de gastos y el presupuesto
-    totalMontoContenedor.innerHTML = `<p>Total: ₡${totalMonto.toLocaleString(
-      "es-CR",
-      { minimumFractionDigits: 0 }
-    )}</p>`;
-    const diferencia = presupuesto - totalMonto;
-    presupuestoContenedor.innerHTML = `<p>Presupuesto: ₡${presupuesto.toLocaleString(
-      "es-CR",
-      { minimumFractionDigits: 0 }
-    )}</p>
-                                        <p>Diferencia: ₡${diferencia.toLocaleString(
-                                          "es-CR",
-                                          { minimumFractionDigits: 0 }
-                                        )}</p>`;
-
-    // Añadir eventos para los botones de eliminar
-    document.querySelectorAll(".eliminar-btn").forEach((button) => {
-      button.addEventListener("click", async () => {
-        const docId = button.getAttribute("data-id");
-        const fotoURL = button.getAttribute("data-foto");
-        if (
-          fotoURL &&
-          confirm("¿Estás seguro de que deseas eliminar este gasto?")
-        ) {
-          try {
-            // Eliminar el documento de Firestore
-            await deleteDoc(
-              doc(db, `usuarios/${user.uid}/meses/${mes}/gastos`, docId)
-            );
-
-            // Eliminar el archivo de Storage
-            const fotoNombre = decodeURIComponent(
-              fotoURL.split("/").pop().split("?")[0]
-            ); // Decodificar y obtener el nombre del archivo
-            const storageRef = ref(storage, `fotos/${fotoNombre}`);
-            await deleteObject(storageRef);
-
-            M.toast({ html: "Gasto y foto eliminados correctamente" });
-            mostrarRegistros(mes); // Volver a cargar los registros
-          } catch (error) {
-            console.error("Error al eliminar el gasto:", error);
-            M.toast({ html: `Error: ${error.message}` });
-          }
-        }
-      });
-    });
+    
   } catch (error) {
     console.error("Error al obtener datos del mes:", error);
   }
@@ -485,6 +338,161 @@ loadSelectedMonth();
 saveSelectedMonth();
 
 let isSubmitting = false; // Variable global para manejar el estado de envío
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  let currentUser = null;
+
+  // Función para obtener el mes y año actuales
+  function getCurrentMonthAndYear() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1; // Mes actual (1-12)
+      return { year, month };
+  }
+
+  // Función para crear un nuevo input para el presupuesto
+  function createBudgetInput(year, month) {
+      const container = document.getElementById('presupuestoContainer');
+      const inputWrapper = document.createElement('div');
+      inputWrapper.classList.add('input-field');
+      
+      const monthString = month.toString().padStart(2, '0');
+      const id = `${year}-${monthString}`;
+      
+      inputWrapper.innerHTML = `
+          <input id="${id}" type="number" step="0.01" min="0">
+          <label for="${id}">Presupuesto ${monthString}/${year}</label>
+      `;
+      
+      container.appendChild(inputWrapper);
+      
+      // Agregar evento para guardar presupuesto en Firestore cuando se cambie el valor
+      inputWrapper.querySelector('input').addEventListener('change', async (event) => {
+          const budget = parseFloat(event.target.value);
+          if (!isNaN(budget) && currentUser) {
+              await saveBudgetToFirestore(currentUser.uid, year, month, budget);
+              M.toast({html: 'Presupuesto guardado', classes: 'rounded'});
+              updateBudgetMonto(budget, year, month);
+          }
+      });
+  }
+
+  // Función para actualizar los inputs de presupuesto
+  async function updateBudgetInputs() {
+      // Limpiar el contenedor antes de agregar nuevos inputs
+      const container = document.getElementById('presupuestoContainer');
+      container.innerHTML = '';
+
+      const { year, month } = getCurrentMonthAndYear();
+      
+      // Crear inputs para todos los meses desde el inicio del año hasta el mes actual
+      for (let m = 1; m <= month; m++) {
+          createBudgetInput(year, m);
+          if (currentUser) {
+              await loadBudgetFromFirestore(currentUser.uid, year, m);
+          }
+      }
+  }
+
+  // Función para guardar el presupuesto en Firestore
+  async function saveBudgetToFirestore(userId, year, month, budget) {
+      const monthString = month.toString().padStart(2, '0');
+      const id = `${year}-${monthString}`;
+      await setDoc(doc(db, "users", userId, "presupuestos", id), {
+          year,
+          month,
+          budget
+      });
+  }
+
+  // Función para cargar el presupuesto desde Firestore
+  async function loadBudgetFromFirestore(userId, year, month) {
+      const monthString = month.toString().padStart(2, '0');
+      const id = `${year}-${monthString}`;
+      const docRef = doc(db, "users", userId, "presupuestos", id);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+          const budgetData = docSnap.data();
+          const input = document.getElementById(id);
+          input.value = budgetData.budget;
+          await updateBudgetMonto(budgetData.budget, year, month); // Actualizar el monto del presupuesto en el div
+          M.updateTextFields(); // Actualizar los campos de texto de Materialize
+      }
+  }
+
+  // Función para obtener el total de gastos del mes seleccionado
+  async function getTotalExpensesForMonth(userId, year, month) {
+      const monthString = month.toString().padStart(2, '0');
+      const expensesQuery = query(
+          collection(db, "users", userId, "gastos"),
+          where("year", "==", year),
+          where("month", "==", month)
+      );
+      const querySnapshot = await getDocs(expensesQuery);
+      let totalExpenses = 0;
+      querySnapshot.forEach((doc) => {
+          totalExpenses += doc.data().amount;
+      });
+      return totalExpenses;
+  }
+
+  // Función para actualizar el div con el presupuesto del mes seleccionado
+  async function updateBudgetMonto(budget, year, month) {
+      const totalExpenses = await getTotalExpensesForMonth(currentUser.uid, year, month);
+      const remainingBudget = budget - totalExpenses;
+      
+      const presupuestoMontoDiv = document.getElementById('presupuestoMonto');
+      
+      // Actualizar el contenido del div con el presupuesto y la diferencia
+      presupuestoMontoDiv.innerHTML = `
+          <p>Presupuesto: ₡${budget.toLocaleString("es-CR", { minimumFractionDigits: 0 })}</p>
+          <p>Gastos: ₡${totalExpenses.toLocaleString("es-CR", { minimumFractionDigits: 0 })}</p>
+          <p>Diferencia: ₡${remainingBudget.toLocaleString("es-CR", { minimumFractionDigits: 0 })}</p>
+      `;
+  }
+
+  // Manejar autenticación del usuario
+  onAuthStateChanged(auth, user => {
+      if (user) {
+          currentUser = user;
+          updateBudgetInputs();
+      } else {
+          currentUser = null;
+          const container = document.getElementById('presupuestoContainer');
+          container.innerHTML = '<p>Please log in to see and set your budget.</p>';
+          document.getElementById('presupuestoMonto').textContent = ''; // Limpiar el presupuesto mostrado si el usuario cierra sesión
+      }
+  });
+
+  // Actualizar los inputs cuando se haga clic en el botón
+  document.getElementById('addMonthBtn').addEventListener('click', () => {
+      if (currentUser) {
+          updateBudgetInputs();
+      } else {
+          M.toast({html: 'Please log in first', classes: 'rounded'});
+      }
+  });
+});
+
+
+
+
+
+
+
+
+
 
 
 
@@ -617,6 +625,23 @@ style.textContent = `
     font-style: normal;
   }
 `;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const { jsPDF } = window.jspdf;
