@@ -12,6 +12,7 @@ import {
   getDoc,
   Timestamp,
   deleteDoc,
+  runTransaction
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 import {
   getAuth,
@@ -408,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function saveBudgetToFirestore(userId, year, month, budget) {
       const monthString = month.toString().padStart(2, '0');
       const id = `${year}-${monthString}`;
-      await setDoc(doc(db, "users", userId, "presupuestos", id), {
+      await setDoc(doc(db, "usuarios", userId, "presupuestos", id), {
           year,
           month,
           budget
@@ -419,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadBudgetFromFirestore(userId, year, month) {
       const monthString = month.toString().padStart(2, '0');
       const id = `${year}-${monthString}`;
-      const docRef = doc(db, "users", userId, "presupuestos", id);
+      const docRef = doc(db, "usuarios", userId, "presupuestos", id);
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
@@ -435,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function getTotalExpensesForMonth(userId, year, month) {
       const monthString = month.toString().padStart(2, '0');
       const expensesQuery = query(
-          collection(db, "users", userId, "gastos"),
+          collection(db, "usuarios", userId, "gastos"),
           where("year", "==", year),
           where("month", "==", month)
       );
@@ -499,25 +500,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("agregarDatosForm");
-
-  if (form) {
-    form.addEventListener("submit", agregarGastoConFoto);
-  } else {
-    console.error("Formulario no encontrado.");
-  }
-
-  // Establecer el valor del campo año al cargar la página
-  const yearElement = document.getElementById("year");
-  if (yearElement) {
-    yearElement.value = new Date().getFullYear();
-  } else {
-    console.error("Campo 'year' no encontrado.");
-  }
-});
-
 async function agregarGastoConFoto(event) {
   event.preventDefault();
 
@@ -569,8 +551,8 @@ async function agregarGastoConFoto(event) {
         fotoURL = await subirImagen(file);
       }
 
+      // Guarda el gasto en Firestore
       await addDoc(collection(db, `usuarios/${user.uid}/meses/${mes}/gastos`), {
-        year: Number(year),
         tipoGasto: tipoGasto,
         numeroFactura: numeroFactura,
         monto: Number(monto),
@@ -578,12 +560,19 @@ async function agregarGastoConFoto(event) {
         fechaCreacion: Timestamp.now(),
       });
 
+      // Actualiza el presupuesto
+      await actualizarPresupuesto(user.uid, mes, Number(monto));
+
       console.log("Datos y URL de la imagen guardados en Firestore");
       M.toast({ html: "Gasto agregado correctamente" });
 
       form.reset();
       // Establecer el valor del campo año nuevamente después de resetear el formulario
       yearElement.value = new Date().getFullYear();
+
+      // Actualizar los registros del mes
+      mostrarRegistros(mes);
+      
     } else {
       console.error("No hay usuario autenticado.");
     }
@@ -597,6 +586,34 @@ async function agregarGastoConFoto(event) {
     }
   }
 }
+
+
+async function actualizarPresupuesto(userId, mes, gasto) {
+  const userRef = doc(db, "usuarios", userId);
+  const mesRef = doc(userRef, "meses", mes);
+
+  try {
+    await runTransaction(db, async (transaction) => {
+      const mesDoc = await transaction.get(mesRef);
+
+      if (!mesDoc.exists()) {
+        throw new Error("El mes no existe.");
+      }
+
+      const data = mesDoc.data();
+      const presupuesto = data.presupuesto || 0;
+      const nuevoPresupuesto = presupuesto - gasto;
+
+      transaction.update(mesRef, { presupuesto: nuevoPresupuesto });
+    });
+
+    console.log("Presupuesto actualizado correctamente.");
+  } catch (error) {
+    console.error("Error al actualizar presupuesto: ", error);
+  }
+}
+
+
 
 async function subirImagen(file) {
   const storageRef = ref(storage, `imagenes/${file.name}`);
